@@ -1,5 +1,6 @@
 package com.marketplace.repository;
 
+// import com.marketplace.model.Product;
 import com.marketplace.model.Store;
 import java.io.*;
 import java.util.ArrayList;
@@ -8,16 +9,27 @@ import java.util.List;
 public class StoreRepository {
     private static final String FILE_PATH = "stores.ser";
     
-    public List<Store> loadStores() {
+   public List<Store> loadStores() {
         List<Store> stores = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            stores = (List<Store>) ois.readObject();
-        } catch (FileNotFoundException e) {
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Object obj = ois.readObject();
+            if (obj instanceof List<?>) {
+                List<?> tempList = (List<?>) obj;
+                for (Object item : tempList) { 
+                    if (item instanceof Store) {
+                        stores.add((Store) item);
+                } else {
+                    throw new ClassCastException("Objeto inválido encontrado na lista");
+                }
+            } 
+        } else {
+            throw new ClassCastException("Objeto deserializado não é uma List");
         }
-        return stores;
+    } catch (IOException | ClassNotFoundException | ClassCastException e) {
+        e.printStackTrace();
     }
+    return stores;
+}
     
     public void saveStores(List<Store> stores) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {

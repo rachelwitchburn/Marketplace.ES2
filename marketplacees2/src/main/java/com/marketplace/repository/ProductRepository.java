@@ -1,6 +1,7 @@
 package com.marketplace.repository;
 
 import com.marketplace.model.Product;
+// import com.marketplace.model.Product;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +12,24 @@ public class ProductRepository {
     public List<Product> loadProducts() {
         List<Product> products = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            products = (List<Product>) ois.readObject();
-        } catch (FileNotFoundException e) {
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Object obj = ois.readObject();
+            if (obj instanceof List<?>) {
+                List<?> tempList = (List<?>) obj;
+                for (Object item : tempList) { 
+                    if (item instanceof Product) {
+                        products.add((Product) item);
+                } else {
+                    throw new ClassCastException("Objeto inválido encontrado na lista");
+                }
+            } 
+        } else {
+            throw new ClassCastException("Objeto deserializado não é uma List");
         }
-        return products;
+    } catch (IOException | ClassNotFoundException | ClassCastException e) {
+        e.printStackTrace();
     }
+    return products;
+}
     
     public void saveProducts(List<Product> products) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {

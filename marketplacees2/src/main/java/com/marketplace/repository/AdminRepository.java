@@ -1,6 +1,8 @@
 package com.marketplace.repository;
 
 import com.marketplace.model.Admin;
+// import com.marketplace.model.Buyer;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,16 +10,27 @@ import java.util.List;
 public class AdminRepository {
     private static final String FILE_PATH = "admins.ser";
     
-    public List<Admin> loadAdmins() {
+   public List<Admin> loadAdmins() {
         List<Admin> admins = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            admins = (List<Admin>) ois.readObject();
-        } catch (FileNotFoundException e) {
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Object obj = ois.readObject();
+            if (obj instanceof List<?>) {
+                List<?> tempList = (List<?>) obj;
+                for (Object item : tempList) { 
+                    if (item instanceof Admin) {
+                        admins.add((Admin) item);
+                } else {
+                    throw new ClassCastException("Objeto inválido encontrado na lista");
+                }
+            } 
+        } else {
+            throw new ClassCastException("Objeto deserializado não é uma List");
         }
-        return admins;
+    } catch (IOException | ClassNotFoundException | ClassCastException e) {
+        e.printStackTrace();
     }
+    return admins;
+}
     
     public void saveAdmins(List<Admin> admins) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
@@ -25,6 +38,7 @@ public class AdminRepository {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
     }
     
     public void addAdmin(Admin admin) {

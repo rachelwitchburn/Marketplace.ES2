@@ -1,5 +1,6 @@
 package com.marketplace.repository;
 
+// import com.marketplace.model.Admin;
 import com.marketplace.model.Buyer;
 import java.io.*;
 import java.util.ArrayList;
@@ -11,13 +12,24 @@ public class BuyerRepository {
     public List<Buyer> loadBuyers() {
         List<Buyer> buyers = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
-            buyers = (List<Buyer>) ois.readObject();
-        } catch (FileNotFoundException e) {
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Object obj = ois.readObject();
+            if (obj instanceof List<?>) {
+                List<?> tempList = (List<?>) obj;
+                for (Object item : tempList) { 
+                    if (item instanceof Buyer) {
+                        buyers.add((Buyer) item);
+                } else {
+                    throw new ClassCastException("Objeto inválido encontrado na lista");
+                }
+            } 
+        } else {
+            throw new ClassCastException("Objeto deserializado não é uma List");
         }
-        return buyers;
+    } catch (IOException | ClassNotFoundException | ClassCastException e) {
+        e.printStackTrace();
     }
+    return buyers;
+}
     
     public void saveBuyers(List<Buyer> buyers) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
