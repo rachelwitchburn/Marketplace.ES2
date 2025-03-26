@@ -54,14 +54,14 @@ public class MarketplaceFacade {
 
     // Gerenciamento de Produtos
     public void addProduct(String name, double value, int quantity, int storeId) {
-        Product newProduct = new Product(name, value, quantity, storeId);
+        Product newProduct = new Product();
         productService.addProduct(newProduct);
     }
 
     public List<Product> listProducts() { return productService.listProducts(); }
 
     public boolean updateProduct(int id, String name, double price, int quantity, int storeId) {
-        Product updatedProduct = new Product(name, price, quantity, storeId);
+        Product updatedProduct = new Product();
         updatedProduct.setId(id);
         return productService.updateProduct(updatedProduct);
     }
