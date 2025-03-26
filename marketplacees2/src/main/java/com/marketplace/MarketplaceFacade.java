@@ -1,71 +1,147 @@
 package com.marketplace;
 
+import com.marketplace.Enum.ProductType;
 import com.marketplace.model.Buyer;
-import com.marketplace.model.Store;
 import com.marketplace.model.Product;
-import com.marketplace.service.BuyerService;
-import com.marketplace.service.StoreService;
-import com.marketplace.service.ProductService;
+import com.marketplace.model.Store;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MarketplaceFacade {
-    private final BuyerService buyerService;
-    private final StoreService storeService;
-    private final ProductService productService;
+    private List<Buyer> buyers;
+    private List<Product> products;
+    private List<Store> stores;
 
-    public MarketplaceFacade(BuyerService buyerService, StoreService storeService, ProductService productService) {
-        this.buyerService = buyerService;
-        this.storeService = storeService;
-        this.productService = productService;
+    private static final String BUYERS_FILE = "buyers.dat";
+    private static final String PRODUCTS_FILE = "products.dat";
+    private static final String STORES_FILE = "stores.dat";
+
+    public MarketplaceFacade() {
+        this.buyers = loadData(BUYERS_FILE);
+        this.products = loadData(PRODUCTS_FILE);
+        this.stores = loadData(STORES_FILE);
     }
 
-    // Gerenciamento de Compradores
+    // Adicionar comprador
     public void addBuyer(String name, String email, String password, String cpf, String address) {
-        Buyer newBuyer = new Buyer(name, email, password, cpf, address);
-        buyerService.addBuyer(newBuyer);
+        Buyer buyer = new Buyer(name, email, password, cpf, address);
+        buyers.add(buyer);
+        saveData(BUYERS_FILE, buyers);
     }
 
-    public List<Buyer> listBuyers() { return buyerService.listBuyers(); }
-
-    public boolean updateBuyer(int id, String name, String email, String password, String cpf, String address) {
-        Buyer updatedBuyer = new Buyer(name, email, password, cpf, address);
-        updatedBuyer.setId(id);
-        return buyerService.updateBuyer(updatedBuyer);
+    // Adicionar produto
+    public void addProduct(String name, float value, ProductType type, String brand, String description) {
+        Product product = new Product(name, value, type, brand, description);
+        products.add(product);
+        saveData(PRODUCTS_FILE, products);
     }
 
-    public boolean removeBuyer(int id) { return buyerService.removeBuyer(id); }
-
-    // Gerenciamento de Lojas
+    // Adicionar loja
     public void addStore(String name, String email, String password, String cnpj, String address) {
-        Store newStore = new Store(name, email, password, cnpj, address);
-        storeService.addStore(newStore);
+        Store store = new Store(name, email, password,  cnpj,  address);
+        stores.add(store);
+        saveData(STORES_FILE, stores);
     }
 
-    public List<Store> listStores() { return storeService.listStores(); }
-
-    public boolean updateStore(int id, String name, String email, String password, String cnpj, String address) {
-        Store updatedStore = new Store(name, email, password, cnpj, address);
-        updatedStore.setId(id);
-        return storeService.updateStore(updatedStore);
+    // Listar compradores
+    public List<Buyer> listBuyers() {
+        return buyers;
     }
 
-    public boolean removeStore(int id) { return storeService.removeStore(id); }
-
-    // Gerenciamento de Produtos
-    public void addProduct(String name, double value, int quantity, int storeId) {
-        Product newProduct = new Product();
-        productService.addProduct(newProduct);
+    // Listar produtos
+    public List<Product> listProducts() {
+        return products;
     }
 
-    public List<Product> listProducts() { return productService.listProducts(); }
-
-    public boolean updateProduct(int id, String name, double price, int quantity, int storeId) {
-        Product updatedProduct = new Product();
-        updatedProduct.setId(id);
-        return productService.updateProduct(updatedProduct);
+    // Listar lojas
+    public List<Store> listStores() {
+        return stores;
     }
 
-    public boolean removeProduct(int id) { return productService.removeProduto(id); }
+    // Atualizar comprador
+    public void updateBuyer(int id,String email, String name, String password, String cpf, String address) {
+        for (Buyer buyer : buyers) {
+            if (buyer.getId() == id) {
+                buyer.setName(name);
+                buyer.setPassword(password);
+                buyer.setCpf(cpf);
+                buyer.setAddress(address);
+                saveData(BUYERS_FILE, buyers);
+                return;
+            }
+        }
+    }
+
+    // Atualizar produto
+    public void updateProduct(String productName, double value, ProductType type, String brand, String description) {
+        for (Product product : products) {
+            if (product.getName().equals(productName)) {
+                product.setValue(value);
+                product.setType(type);
+                product.setBrand(brand);
+                product.setDescription(description);
+                saveData(PRODUCTS_FILE, products);
+                return;
+            }
+        }
+    }
+
+    // Atualizar loja
+    public void updateStore(int id, String name, String email, String password, String cnpj, String address) {
+        for (Store store : stores) {
+            if (store.getId() == id) {
+                store.setName(name);
+                store.setEmail(email);
+                store.setPassword(password);
+                store.setCnpj(cnpj);
+                store.setAddress(address);
+                saveData(STORES_FILE, stores);
+                return;
+            }
+        }
+    }
+
+
+    // Deletar comprador
+    public void deleteBuyer(String email) {
+        buyers.removeIf(buyer -> buyer.getEmail().equals(email));
+        saveData(BUYERS_FILE, buyers);
+    }
+
+    // Deletar produto
+    public void deleteProduct(String productName) {
+        products.removeIf(product -> product.getName().equals(productName));
+        saveData(PRODUCTS_FILE, products);
+    }
+
+    // Deletar loja
+    public void deleteStore(String storeName) {
+        stores.removeIf(store -> store.getName().equals(storeName));
+        saveData(STORES_FILE, stores);
+    }
+
+    // Método genérico para salvar listas
+    private <T> void saveData(String fileName, List<T> list) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            out.writeObject(list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método genérico para carregar listas
+    @SuppressWarnings("unchecked")
+    private <T> List<T> loadData(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()) return new ArrayList<>();
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            return (List<T>) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 }
-
