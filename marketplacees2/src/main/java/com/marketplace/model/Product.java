@@ -9,16 +9,13 @@ public class Product implements Serializable{
 
     private int id;
     private String name;
-    private String value;
+    private double value;
     private ProductType type;
     private String brand;
     private String description;
 
-    public Product() {
 
-    }
-
-    public Product(String name, String value, ProductType type, String brand, String description) {
+    public Product(String name, double value, ProductType type, String brand, String description) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -42,11 +39,11 @@ public class Product implements Serializable{
         this.name = name; 
     }
 
-    public String getValue() { 
+    public double getValue() {
         return value; 
     }
 
-    public void setValue(String value) { 
+    public void setValue(double value) {
         this.value = value; 
     }
 
@@ -70,7 +67,7 @@ public class Product implements Serializable{
         return description; 
     }
 
-    public void setDescriptipn(String description) { 
+    public void setDescription(String description) {
         this.description = description; 
     }
 
