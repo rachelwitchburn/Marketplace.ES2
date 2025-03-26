@@ -7,7 +7,7 @@ import java.util.List;
 public class StoreService {
     private StoreRepository repository = new StoreRepository();
 
-    public StoreService(){
+    public StoreService(StoreRepository repository){
         this.repository = repository;
     }
     
