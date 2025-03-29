@@ -1,6 +1,7 @@
 package com.marketplace;
 
 import com.marketplace.Enum.ProductType;
+import com.marketplace.model.Admin;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
 import com.marketplace.model.Store;
@@ -13,15 +14,18 @@ public class MarketplaceFacade {
     private List<Buyer> buyers;
     private List<Product> products;
     private List<Store> stores;
+    private List<Admin> admins;
 
     private static final String BUYERS_FILE = "buyers.dat";
     private static final String PRODUCTS_FILE = "products.dat";
     private static final String STORES_FILE = "stores.dat";
+    private static final String ADMINS_FILE = "admins.dat";
 
     public MarketplaceFacade() {
         this.buyers = loadData(BUYERS_FILE);
         this.products = loadData(PRODUCTS_FILE);
         this.stores = loadData(STORES_FILE);
+        this.admins = loadData(ADMINS_FILE);
     }
 
     // Adicionar comprador
@@ -45,6 +49,12 @@ public class MarketplaceFacade {
         saveData(STORES_FILE, stores);
     }
 
+    public void addAdmin(String name, String email, String password, String cpf, String address) {
+        Buyer buyer = new Buyer(name, email, password, cpf, address);
+        buyers.add(buyer);
+        saveData(BUYERS_FILE, buyers);
+    }
+
     // Listar compradores
     public List<Buyer> listBuyers() {
         return buyers;
@@ -58,6 +68,10 @@ public class MarketplaceFacade {
     // Listar lojas
     public List<Store> listStores() {
         return stores;
+    }
+
+    public List<Admin> listAdmins() {
+        return admins;
     }
 
     // Atualizar comprador
@@ -103,6 +117,19 @@ public class MarketplaceFacade {
         }
     }
 
+    public void updateAdmin(int id,String email, String name, String password, String cpf, String address) {
+        for (Admin admin : admins) {
+            if (admin.getId() == id) {
+                admin.setName(name);
+                admin.setPassword(password);
+                admin.setCpf(cpf);
+                admin.setAddress(address);
+                saveData(ADMINS_FILE, admins);
+                return;
+            }
+        }
+    }
+
 
     // Deletar comprador
     public void deleteBuyer(String email) {
@@ -122,6 +149,11 @@ public class MarketplaceFacade {
         saveData(STORES_FILE, stores);
     }
 
+    public void deleteAdmin(String email) {
+        admins.removeIf(admin -> admin.getEmail().equals(email));
+        saveData(ADMINS_FILE, buyers);
+    }
+
     // Método genérico para salvar listas
     private <T> void saveData(String fileName, List<T> list) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
@@ -130,6 +162,7 @@ public class MarketplaceFacade {
             e.printStackTrace();
         }
     }
+
 
     // Método genérico para carregar listas
     @SuppressWarnings("unchecked")
