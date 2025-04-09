@@ -5,10 +5,12 @@ import com.marketplace.model.Admin;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
 import com.marketplace.model.Store;
+import com.marketplace.service.ProductService;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MarketplaceFacade {
     private List<Buyer> buyers;
@@ -26,6 +28,12 @@ public class MarketplaceFacade {
         this.products = loadData(PRODUCTS_FILE);
         this.stores = loadData(STORES_FILE);
         this.admins = loadData(ADMINS_FILE);
+
+        if (this.admins == null || this.admins.isEmpty()) {
+            Admin defaultAdmin = new Admin("Administrador", "admin@admin.com", "admin123", "00000000000", "N/A");
+            this.admins.add(defaultAdmin);
+            saveData(ADMINS_FILE, admins);
+        }
     }
 
     // Adicionar comprador
@@ -36,8 +44,8 @@ public class MarketplaceFacade {
     }
 
     // Adicionar produto
-    public void addProduct(String name, float value, ProductType type, String brand, String description) {
-        Product product = new Product(name, value, type, brand, description);
+    public void addProduct(String name, Float value, int quantity, ProductType type, String brand, String description) {
+        Product product = new Product(name, value, quantity, type, brand, description);
         products.add(product);
         saveData(PRODUCTS_FILE, products);
     }
@@ -65,6 +73,13 @@ public class MarketplaceFacade {
         return products;
     }
 
+    //Buscar produtos
+    public List<Product> searchProduct(String name) {
+        return products.stream()
+                .filter(p -> p.getName().equalsIgnoreCase(name))
+                .collect(Collectors.toList());
+    }
+
     // Listar lojas
     public List<Store> listStores() {
         return stores;
@@ -89,11 +104,12 @@ public class MarketplaceFacade {
     }
 
     // Atualizar produto
-    public void updateProduct(String productName, double value, ProductType type, String brand, String description) {
+    public void updateProduct(String productName, Float value, int quantity, ProductType type, String brand, String description) {
         for (Product product : products) {
             if (product.getName().equals(productName)) {
                 product.setValue(value);
                 product.setType(type);
+                product.setQuantity(quantity);
                 product.setBrand(brand);
                 product.setDescription(description);
                 saveData(PRODUCTS_FILE, products);
@@ -163,8 +179,39 @@ public class MarketplaceFacade {
         }
     }
 
+    public boolean addToCart(Buyer buyer, String productName) {
+        for (Product product : this.products) {
+            if (product.getName().equalsIgnoreCase(productName) && product.getQuantity() > 0) {
+                buyer.addToCart(product);
+                return true;
+            }
+        }
+        return false;
+    }
 
-    // Método genérico para carregar listas
+    public Object login(String email, String password) {
+        for (Admin admin : admins) {
+            if (admin.getEmail().equals(email) && admin.getPassword().equals(password)) {
+                return admin;
+            }
+        }
+    
+        for (Store store : stores) {
+            if (store.getEmail().equals(email) && store.getPassword().equals(password)) {
+                return store;
+            }
+        }
+    
+        for (Buyer buyer : buyers) {
+            if (buyer.getEmail().equals(email) && buyer.getPassword().equals(password)) {
+                return buyer;
+            }
+        }
+    
+        return null;
+    }
+  
+
     @SuppressWarnings("unchecked")
     private <T> List<T> loadData(String fileName) {
         File file = new File(fileName);

@@ -2,6 +2,8 @@ package com.marketplace.service;
 
 import com.marketplace.model.Product;
 import com.marketplace.repository.ProductRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductService {
@@ -23,7 +25,20 @@ public class ProductService {
         return repository.updateProduct(product);
     }
     
-    public boolean removeProduto(int id) {
+    public boolean removeProduct(int id) {
         return repository.removeProduct(id);
+    }
+
+    public List<Product> searchProduct(String name) {
+        List<Product> all = repository.getAllProducts();
+        List<Product> found = new ArrayList<>();
+
+        for (Product p : all) {
+            if (p.getName().equalsIgnoreCase(name)) {
+                found.add(p);
+            }
+        }
+
+        return found;
     }
 }

@@ -10,21 +10,23 @@ public class Product implements Serializable{
     private int id;
     private String name;
     private double value;
+    private int quantity;
     private ProductType type;
     private String brand;
     private String description;
 
 
-    public Product(String name, double value, ProductType type, String brand, String description) {
+    public Product(String name, double value, int quantity, ProductType type, String brand, String description) {
         this.name = name;
         this.value = value;
+        this.quantity = quantity;
         this.type = type;
         this.brand = brand;
         this.description = description;
     }
 
     public int getId() { 
-        return id; 
+        return this.id; 
     }
     
     public void setId(int id) { 
@@ -32,7 +34,7 @@ public class Product implements Serializable{
     }
 
     public String getName() { 
-        return name; 
+        return this.name; 
     }
 
     public void setName(String name) { 
@@ -40,15 +42,23 @@ public class Product implements Serializable{
     }
 
     public double getValue() {
-        return value; 
+        return this.value; 
     }
 
     public void setValue(double value) {
         this.value = value; 
     }
 
+    public int getQuantity() {
+        return this.quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public ProductType getType() { 
-        return type; 
+        return this.type; 
     }
 
     public void setType(ProductType type) { 
@@ -56,7 +66,7 @@ public class Product implements Serializable{
     }
 
     public String getBrand() { 
-        return brand; 
+        return this.brand; 
     }
 
     public void setBrand(String brand) { 
@@ -64,7 +74,7 @@ public class Product implements Serializable{
     }
 
     public String getDescription() { 
-        return description; 
+        return this.description; 
     }
 
     public void setDescription(String description) {
@@ -76,6 +86,7 @@ public class Product implements Serializable{
         return "Product{" +
                "nome='" + name + '\'' +
                ", valor='" + value + '\'' +
+               ", quantidade='" + value + '\'' +
                ", categoria='" + type + '\'' +
                ", marca='" + brand + '\'' +
                ", descrição='" + description + '\'' +

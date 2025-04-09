@@ -30,13 +30,13 @@ public class ProductServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private Product createProduct(String name, double value, ProductType productType, String brand, String description) {
-        return new Product(name, value, productType, brand, description);
+    private Product createProduct(String name, double value, int quantity, ProductType productType, String brand, String description) {
+        return new Product(name, value, quantity, productType, brand, description);
     }
 
     @Test
     void testAddProduct() {
-        Product product = createProduct("Notebook Acer", 2500, ProductType.ELETRÔNICO, "Acer", "Descrição");
+        Product product = createProduct("Notebook Acer", 2500, 10, ProductType.ELETRONICO, "Acer", "Descrição");
 
         ArgumentCaptor<Product> productCaptor = ArgumentCaptor.forClass(Product.class);
         doNothing().when(productRepository).addProduct(productCaptor.capture());
@@ -50,8 +50,8 @@ public class ProductServiceTest {
 
     @Test
     void testListProducts() {
-        Product product1 = createProduct("Notebook Acer", 2500, ProductType.ELETRÔNICO, "Acer", "Descrição");
-        Product product2 = createProduct("Notebook Multilaser", 2000, ProductType.ELETRÔNICO, "Multilaser", "Descrição");
+        Product product1 = createProduct("Notebook Acer", 2500, 10, ProductType.ELETRONICO, "Acer", "Descrição");
+        Product product2 = createProduct("Notebook Multilaser", 2000, 10, ProductType.ELETRONICO, "Multilaser", "Descrição");
 
         when(productRepository.getAllProducts()).thenReturn(Arrays.asList(product1, product2));
 
@@ -73,7 +73,7 @@ public class ProductServiceTest {
 
     @Test
     void testUpdateProduct_Success() {
-        Product productToUpdate = createProduct("Monitor", 3000, ProductType.ELETRÔNICO, "Acer", "Descrição");
+        Product productToUpdate = createProduct("Monitor", 3000, 5, ProductType.ELETRONICO, "Acer", "Descrição");
 
         when(productRepository.updateProduct(productToUpdate)).thenReturn(true);
 
@@ -85,7 +85,7 @@ public class ProductServiceTest {
 
     @Test
     void testUpdateProduct_NotFound() {
-        Product productToUpdate = createProduct("Mouse", 300, ProductType.ELETRÔNICO, "Logitech", "Descrição");
+        Product productToUpdate = createProduct("Mouse", 300, 20, ProductType.ELETRONICO, "Logitech", "Descrição");
 
         when(productRepository.updateProduct(productToUpdate)).thenReturn(false);
 
@@ -101,7 +101,7 @@ public class ProductServiceTest {
 
         when(productRepository.removeProduct(productId)).thenReturn(true);
 
-        boolean result = productService.removeProduto(productId);
+        boolean result = productService.removeProduct(productId);
 
         assertTrue(result);
         verify(productRepository, times(1)).removeProduct(productId);
@@ -113,7 +113,7 @@ public class ProductServiceTest {
 
         when(productRepository.removeProduct(productId)).thenReturn(false);
 
-        boolean result = productService.removeProduto(productId);
+        boolean result = productService.removeProduct(productId);
 
         assertFalse(result, "O produto não deveria ter sido removido, pois não foi encontrado.");
         verify(productRepository, times(1)).removeProduct(productId);
@@ -121,7 +121,7 @@ public class ProductServiceTest {
 
     @Test
     void testAddProductThrowsException() {
-        Product product = createProduct("Notebook Acer", 2500, ProductType.ELETRÔNICO, "Acer", "Descrição");
+        Product product = createProduct("Notebook Acer", 2500, 5, ProductType.ELETRONICO, "Acer", "Descrição");
 
         // Simula exceção no repositório
         doThrow(new RuntimeException("Erro ao adicionar produto")).when(productRepository).addProduct(product);
@@ -133,7 +133,7 @@ public class ProductServiceTest {
 
     @Test
     void testUpdateProductThrowsException() {
-        Product productToUpdate = createProduct("Mouse", 300, ProductType.ELETRÔNICO, "Logitech", "Descrição");
+        Product productToUpdate = createProduct("Mouse", 300, 10, ProductType.ELETRONICO, "Logitech", "Descrição");
 
         // Simula exceção no repositório
         when(productRepository.updateProduct(productToUpdate)).thenThrow(new RuntimeException("Erro ao atualizar produto"));

@@ -1,6 +1,8 @@
 package com.marketplace.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Buyer implements Serializable{
     private static final long serialVersionUID = 1L;
@@ -11,6 +13,7 @@ public class Buyer implements Serializable{
     private String password;
     private String cpf;
     private String address;
+    private transient List<Product> cart = new ArrayList<>();
 
     public Buyer() {
 
@@ -70,6 +73,18 @@ public class Buyer implements Serializable{
 
     public void setAddress(String address) { 
         this.address = address; 
+    }
+
+    public List<Product> getCart() {
+        return cart;
+    }
+
+    public void addToCart(Product product) {
+        this.cart.add(product);
+    }
+
+    public void cleanCart() {
+        this.cart.clear();
     }
 
     @Override
