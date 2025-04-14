@@ -83,6 +83,8 @@ public class Buyer implements Serializable{
         this.cart.add(product);
     }
 
+    public void deleteFromCart(Product product){this.cart.remove(product); }
+
     public void cleanCart() {
         this.cart.clear();
     }

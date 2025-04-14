@@ -189,6 +189,15 @@ public class MarketplaceFacade {
         return false;
     }
 
+    public boolean deleteFromCart(Buyer buyer, String productName) {
+        for (Product product : this.products) {
+            if(product.getName().equalsIgnoreCase(productName)){
+                buyer.deleteFromCart(product);
+            }
+        }
+        return false;
+    }
+
     public Object login(String email, String password) {
         for (Admin admin : admins) {
             if (admin.getEmail().equals(email) && admin.getPassword().equals(password)) {
