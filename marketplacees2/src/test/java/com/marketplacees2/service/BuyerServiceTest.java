@@ -1,8 +1,11 @@
 package com.marketplacees2.service;
 
+import com.marketplace.Enum.ProductType;
 import com.marketplace.model.Buyer;
+import com.marketplace.model.Product;
 import com.marketplace.repository.BuyerRepository;
 import com.marketplace.service.BuyerService;
+import com.marketplace.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,6 +25,7 @@ public class BuyerServiceTest {
     void setUp() {
         buyerRepository = mock(BuyerRepository.class);
         buyerService = new BuyerService(buyerRepository);
+
     }
 
     private Buyer createBuyer(String name, String email) {
@@ -132,5 +136,61 @@ public class BuyerServiceTest {
             buyerService.addBuyer(buyer);
         }, "Esperado que uma exceção seja lançada ao adicionar buyer.");
     }
+
+
+    @Test
+    void testBuyProduct_RemovesProductFromCart() {
+
+        Buyer buyer = new Buyer();
+        Product product1 = new Product("Notebook Acer", 2500, 2, ProductType.ELETRONICO, "Acer", "Descrição");
+        Product product2 = new Product("Notebook Multilaser", 2000, 2, ProductType.ELETRONICO, "Multilaser", "Descrição");
+
+        buyer.addToCart(product1);
+        buyer.addToCart(product2);
+
+        assertTrue(buyer.getCart().contains(product1));
+
+        boolean result = buyer.buyProduct(product1);
+
+        assertTrue(result);
+        assertFalse(buyer.getCart().contains(product1));
+        assertEquals(1, product1.getQuantity()); // de 2 para 1
+    }
+
+    @Test
+    void testFinalizePurchase_ClearsCart() {
+        Buyer buyer = new Buyer();
+        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição");
+        Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição");
+
+        buyer.addToCart(product1);
+        buyer.addToCart(product2);
+
+        boolean result = buyer.finalizePurchase();
+
+        assertTrue(result);
+        assertTrue(buyer.getCart().isEmpty());
+        assertEquals(0, product1.getQuantity());
+        assertEquals(0, product2.getQuantity());
+    }
+
+    @Test
+    void testAddToCart_ProductIsAdded(){
+
+        Buyer buyer = new Buyer();
+        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição");
+
+        buyer.addToCart(product1);
+
+        List<Product> cart = buyer.getCart();
+
+        assertNotNull(cart);
+        assertEquals(1,cart.size());
+        assertTrue(cart.contains(product1));
+
+    }
+
+
+
 }
 
