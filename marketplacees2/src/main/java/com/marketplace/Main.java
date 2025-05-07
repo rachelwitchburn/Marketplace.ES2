@@ -114,9 +114,11 @@ public class Main {
             System.out.println("\n=== Menu Comprador ===");
             System.out.println("1. Buscar produto");
             System.out.println("2. Adicionar produto ao carrinho");
-            System.out.println("3. Excluir produto ao carrinho");
+            System.out.println("3. Excluir produto do carrinho");
             System.out.println("4. Ver carrinho");
-            System.out.println("5. Sair");
+            System.out.println("5. Comprar um produto do carrinho");
+            System.out.println("6. Finalizar compra (comprar todos os produtos)");
+            System.out.println("7. Sair");
 
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
@@ -150,12 +152,13 @@ public class Main {
                 case "3":
                     System.out.print("Nome do produto a excluir: ");
                     String excludeProductName = scanner.nextLine();
-                    boolean deletado = marketplaceFacade.deleteFromCart(user,excludeProductName);
-                    if(deletado){
+                    boolean deletado = marketplaceFacade.deleteFromCart(user, excludeProductName);
+                    if (deletado) {
                         System.out.println("Produto deletado com sucesso.");
-                    }else{
+                    } else {
                         System.out.println("Produto indisponível ou não encontrado.");
                     }
+                    break;
 
                 case "4":
                     System.out.println("\nCarrinho:");
@@ -163,14 +166,37 @@ public class Main {
                         System.out.println(p.getName() + " - R$" + p.getValue());
                     }
                     break;
+
                 case "5":
+                    // Comprar um produto específico do carrinho
+                    System.out.print("Digite o nome do produto para comprar: ");
+                    String productToBuy = scanner.nextLine();
+                    boolean comprado = marketplaceFacade.buyProduct(user, productToBuy);
+                    if (comprado) {
+                        System.out.println("Produto comprado com sucesso!");
+                    } else {
+                        System.out.println("Produto não encontrado no carrinho ou sem estoque.");
+                    }
+                    break;
+
+                case "6":
+                    // Finalizar a compra de todos os produtos do carrinho
+                    boolean sucesso = marketplaceFacade.finalizePurchase(user);
+                    if (sucesso) {
+                        System.out.println("Compra finalizada com sucesso!");
+                    } else {
+                        System.out.println("Carrinho vazio ou produtos sem estoque.");
+                    }
+                    break;
+
+                case "7":
                     return;
+
                 default:
-                    System.out.println("Opção inválida. Tente novamente");
+                    System.out.println("Opção inválida. Tente novamente.");
             }
         }
     }
-
 
     private static void storesMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Store user) {
         while (true) {

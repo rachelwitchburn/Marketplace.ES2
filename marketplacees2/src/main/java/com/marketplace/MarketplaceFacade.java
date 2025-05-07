@@ -179,6 +179,7 @@ public class MarketplaceFacade {
         }
     }
 
+    //Adicionar ao carrinho
     public boolean addToCart(Buyer buyer, String productName) {
         for (Product product : this.products) {
             if (product.getName().equalsIgnoreCase(productName) && product.getQuantity() > 0) {
@@ -189,6 +190,7 @@ public class MarketplaceFacade {
         return false;
     }
 
+    //deletar do carrinho
     public boolean deleteFromCart(Buyer buyer, String productName) {
         for (Product product : this.products) {
             if(product.getName().equalsIgnoreCase(productName)){
@@ -196,6 +198,24 @@ public class MarketplaceFacade {
             }
         }
         return false;
+    }
+
+    //Compra de produtos
+
+    //Unitária
+    public boolean buyProduct(Buyer buyer, String productName) {
+        for (Product product : this.products) {
+            if (product.getName().equalsIgnoreCase(productName)) {
+                return buyer.buyProduct(product);
+            }
+        }
+        System.out.println("Produto não encontrado.");
+        return false;
+    }
+
+    //Total
+    public boolean finalizePurchase(Buyer buyer) {
+        return buyer.finalizePurchase();
     }
 
     public Object login(String email, String password) {

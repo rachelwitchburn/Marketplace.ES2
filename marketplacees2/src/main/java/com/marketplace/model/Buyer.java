@@ -1,5 +1,6 @@
 package com.marketplace.model;
 
+import com.marketplace.model.Product;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,44 @@ public class Buyer implements Serializable{
     public void cleanCart() {
         this.cart.clear();
     }
+
+    public boolean buyProduct(Product product) {
+        if (this.cart.contains(product)) {
+            if (product.getQuantity() > 0) {
+                product.setQuantity(product.getQuantity() - 1);
+                this.cart.remove(product);
+                System.out.println("Compra realizada com sucesso.");
+                return true;
+            } else {
+                System.out.println("Produto sem estoque.");
+                return false;
+            }
+        } else {
+            System.out.println("Produto não está no carrinho.");
+            return false;
+        }
+    }
+
+    public boolean finalizePurchase() {
+        boolean atLeastOneBought = false;
+        List<Product> purchased = new ArrayList<>();
+
+        for (Product product : new ArrayList<>(cart)) {
+            if (product.getQuantity() > 0) {
+                product.setQuantity(product.getQuantity() - 1);
+                purchased.add(product);
+                atLeastOneBought = true;
+                System.out.println("Comprado: " + product.getName());
+            } else {
+                System.out.println("Sem estoque: " + product.getName());
+            }
+        }
+
+        cart.removeAll(purchased);
+        return atLeastOneBought;
+    }
+
+
 
     @Override
     public String toString() {
