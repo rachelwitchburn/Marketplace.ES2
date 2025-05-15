@@ -2,6 +2,7 @@ package com.marketplace;
 
 import java.util.List;
 import java.util.Scanner;
+import com.marketplace.utils.InputUtil;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Store;
 import com.marketplace.model.Admin;
@@ -60,10 +61,9 @@ public class Main {
     private static Object handleLogin(Scanner scanner, MarketplaceFacade marketplaceFacade) {
         System.out.print("Digite seu e-mail: ");
         String email = scanner.nextLine();
-        System.out.print("Digite sua senha: ");
-        String senha = scanner.nextLine();
+        String password = InputUtil.readPassword("Senha: ");
 
-        Object user = marketplaceFacade.login(email, senha);
+        Object user = marketplaceFacade.login(email, password);
         if (user == null) {
             System.out.println("Login inválido. Tente novamente.");
         } else {
@@ -85,8 +85,7 @@ public class Main {
         System.out.print("Email: ");
         String email = scanner.nextLine();
 
-        System.out.print("Senha: ");
-        String password = scanner.nextLine();
+        String password = InputUtil.readPassword("Senha: ");
 
         System.out.print("CPF/CNPJ: ");
         String cpfOrCnpj = scanner.nextLine();
@@ -353,8 +352,7 @@ public class Main {
                     String name = scanner.nextLine();
                     System.out.print("Email: ");
                     String email = scanner.nextLine();
-                    System.out.print("Senha: ");
-                    String password = scanner.nextLine();
+                    String password = InputUtil.readPassword("Senha: ");
                     System.out.print("CNPJ: ");
                     String cnpj = scanner.nextLine();
                     System.out.print("Endereço: ");
@@ -384,8 +382,7 @@ public class Main {
                     String newName = scanner.nextLine();
                     System.out.print("Novo Email: ");
                     String newEmail = scanner.nextLine();
-                    System.out.print("Nova Senha: ");
-                    String newPassword = scanner.nextLine();
+                    String newPassword = InputUtil.readPassword("Senha: ");
                     System.out.print("Novo CNPJ: ");
                     String newCnpj = scanner.nextLine();
                     System.out.print("Novo Endereço: ");
@@ -561,8 +558,7 @@ public class Main {
                     String name = scanner.nextLine();
                     System.out.print("Email: ");
                     String email = scanner.nextLine();
-                    System.out.print("Senha: ");
-                    String password = scanner.nextLine();
+                    String password = InputUtil.readPassword("Senha: ");
                     System.out.print("CPF: ");
                     String cpf = scanner.nextLine();
                     System.out.print("Endereço: ");
@@ -587,8 +583,7 @@ public class Main {
                     String updatedName = scanner.nextLine();
                     System.out.print("Novo Email: ");
                     String updatedEmail = scanner.nextLine();
-                    System.out.print("Nova Senha: ");
-                    String updatedPassword = scanner.nextLine();
+                    String updatedPassword = InputUtil.readPassword("Senha: ");
                     System.out.print("Novo CPF: ");
                     String updatedCpf = scanner.nextLine();
                     System.out.print("Novo Endereço: ");
