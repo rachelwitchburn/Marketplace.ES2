@@ -214,39 +214,80 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    // Adicionar loja
+                // Adicionar produto
+                String name = "";
+                while (name.isBlank()) {
                     System.out.print("Nome do produto: ");
-                    String name = scanner.nextLine();
+                    name = scanner.nextLine().trim();
+                    if (name.isBlank()) {
+                        System.out.println("O nome do produto não pode estar vazio.");
+                    }
+                }
+
+                double productValue = -1.0;
+                while (productValue < 0) {
                     System.out.print("Valor do produto: ");
-                    Float value = scanner.nextFloat();
-                    System.out.print("Quantidade do produto: ");
-                    int quantity = scanner.nextInt();
-                    for (ProductType t : ProductType.values()) {
-                        System.out.println("\n- " + t);
-                    }
-                    while (type == null) {
-                        System.out.print("Categoria do produto: ");
-                        String input = scanner.nextLine().trim().toUpperCase();
-
-                        input = normalizarEntrada(input);
-                        try {
-                            type = ProductType.valueOf(input);
-                            System.out.println("Categoria selecionada: " + type);
-                        } catch (IllegalArgumentException e) {
-                            if (count != 0) {
-                                System.out.println("Categoria inválida! Tente novamente.");
-                            }
+                    String valueInput = scanner.nextLine().replace(",", ".");
+                    try {
+                        productValue = Double.parseDouble(valueInput);
+                        if (productValue <= 0) {
+                            System.out.println("O valor do produto não pode ser negativo.");
                         }
-                        count++;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Valor inválido. Digite um número válido.");
                     }
-                    System.out.print("Marca do produto: ");
-                    String brand = scanner.nextLine();
-                    System.out.print("Descrição do produto: ");
-                    String description = scanner.nextLine();
-                    marketplaceFacade.addProduct(name, value, quantity, type, brand, description);
+                }
 
-                    System.out.println("Produto adicionado com sucesso!");
-                    break;
+                int quantity = -1;
+                while (quantity < 0) {
+                    System.out.print("Quantidade do produto: ");
+                    String quantityInput = scanner.nextLine();
+                    try {
+                        quantity = Integer.parseInt(quantityInput);
+                        if (quantity <= 0) {
+                            System.out.println("A quantidade não pode ser negativa.");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Quantidade inválida. Digite um número inteiro.");
+                    }
+                }
+
+                for (ProductType t : ProductType.values()) {
+                    System.out.println("- " + t);
+                }
+                while (type == null) {
+                    System.out.print("Categoria do produto: ");
+                    String input = scanner.nextLine().trim().toUpperCase();
+                    input = normalizarEntrada(input);
+                    try {
+                        type = ProductType.valueOf(input);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Categoria inválida! Tente novamente.");
+                    }
+                }
+
+                String brand = "";
+                while (brand.isBlank()) {
+                    System.out.print("Marca do produto: ");
+                    brand = scanner.nextLine().trim();
+                    if (brand.isBlank()) {
+                        System.out.println("A marca do produto não pode estar vazia.");
+                    }
+                }
+
+                String description = "";
+                while (description.isBlank()) {
+                    System.out.print("Descrição do produto: ");
+                    description = scanner.nextLine().trim();
+                    if (description.isBlank()) {
+                        System.out.println("A descrição do produto não pode estar vazia.");
+                    }
+                }
+
+                marketplaceFacade.addProduct(name, productValue, quantity, type, brand, description);
+                System.out.println("Produto adicionado com sucesso!");
+                break;
+
                 case 2:
                     // Listar produtos
                     System.out.println("\nLista de Produtos:");

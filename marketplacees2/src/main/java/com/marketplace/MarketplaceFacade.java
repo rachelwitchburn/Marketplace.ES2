@@ -51,7 +51,7 @@ public class MarketplaceFacade {
     }
 
     // Adicionar produto
-    public void addProduct(String name, Float value, int quantity, ProductType type, String brand, String description) {
+    public void addProduct(String name, double value, int quantity, ProductType type, String brand, String description) {
         Product product = new Product(name, value, quantity, type, brand, description);
         products.add(product);
         saveData(PRODUCTS_FILE, products);

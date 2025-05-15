@@ -86,7 +86,7 @@ public class Product implements Serializable{
         return "Product{" +
                "nome='" + name + '\'' +
                ", valor='" + value + '\'' +
-               ", quantidade='" + value + '\'' +
+               ", quantidade='" + quantity + '\'' +
                ", categoria='" + type + '\'' +
                ", marca='" + brand + '\'' +
                ", descrição='" + description + '\'' +
