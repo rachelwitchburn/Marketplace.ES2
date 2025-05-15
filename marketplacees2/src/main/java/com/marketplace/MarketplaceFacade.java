@@ -29,6 +29,13 @@ public class MarketplaceFacade {
         this.stores = loadData(STORES_FILE);
         this.admins = loadData(ADMINS_FILE);
 
+        for (Buyer buyer : this.buyers) {
+            if (buyer.getCart() == null) {
+                buyer.setCart(new ArrayList<>());
+            }
+        }
+
+
         if (this.admins == null || this.admins.isEmpty()) {
             Admin defaultAdmin = new Admin("Administrador", "admin@admin.com", "admin123", "00000000000", "N/A");
             this.admins.add(defaultAdmin);

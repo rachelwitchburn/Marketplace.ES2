@@ -77,8 +77,16 @@ public class Buyer implements Serializable{
     }
 
     public List<Product> getCart() {
+        if (cart == null) {
+            cart = new ArrayList<>();
+        }
         return cart;
     }
+
+    public void setCart(List<Product> cart) {
+        this.cart = cart;
+    }
+
 
     public void addToCart(Product product) {
         this.cart.add(product);
