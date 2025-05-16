@@ -260,4 +260,11 @@ public class MarketplaceFacade {
             return new ArrayList<>();
         }
     }
+
+    public void getPurchaseHistory(Buyer user) {
+        System.out.println("Histórico de compras:");
+        for (Product product : user.getPurchaseHistory()) {
+            System.out.println(product.getName());
+        }
+    }
 }

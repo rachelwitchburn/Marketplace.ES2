@@ -117,7 +117,8 @@ public class Main {
             System.out.println("4. Ver carrinho");
             System.out.println("5. Comprar um produto do carrinho");
             System.out.println("6. Finalizar compra (comprar todos os produtos)");
-            System.out.println("7. Sair");
+            System.out.println("7. Ver histórico de compras");
+            System.out.println("8. Sair");
 
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
@@ -189,6 +190,15 @@ public class Main {
                     break;
 
                 case "7":
+                    // Ver histórico de compras
+                    System.out.println("\nHistórico de Compras:");
+                    marketplaceFacade.getPurchaseHistory(user);
+                    for (Product p : user.getPurchaseHistory()) {
+                        System.out.println(p.getName() + " - R$" + p.getValue());
+                    }
+                    break;
+
+                case "8":
                     return;
 
                 default:
