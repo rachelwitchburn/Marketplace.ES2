@@ -191,6 +191,23 @@ public class BuyerServiceTest {
     }
 
 
+    @Test
+    void listPurchases () {
+        Buyer buyer = new Buyer();
+        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição");
+        Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição");
+
+        buyer.addToCart(product1);
+        buyer.addToCart(product2);
+
+        List<Product> purchases = buyer.getCart();
+
+        assertNotNull(purchases);
+        assertEquals(2, purchases.size());
+        assertTrue(purchases.contains(product1));
+        assertTrue(purchases.contains(product2));
+    }
+
 
 }
 

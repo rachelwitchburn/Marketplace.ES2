@@ -134,6 +134,14 @@ public class Buyer implements Serializable{
         return atLeastOneBought;
     }
 
+    public String listPurchases() {
+        StringBuilder purchases = new StringBuilder();
+        for (Product product : cart) {
+            purchases.append(product.getName()).append("\n");
+        }
+        return purchases.toString();
+    }
+
 
 
     @Override
