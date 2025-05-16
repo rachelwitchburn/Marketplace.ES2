@@ -15,6 +15,7 @@ public class Buyer implements Serializable{
     private String cpf;
     private String address;
     private transient List<Product> cart = new ArrayList<>();
+    private List<Product> purchaseHistory = new ArrayList<>();
 
     public Buyer() {
 
@@ -87,6 +88,12 @@ public class Buyer implements Serializable{
         this.cart = cart;
     }
 
+    public List<Product> getPurchaseHistory() {
+        if (purchaseHistory == null) {
+            purchaseHistory = new ArrayList<>();
+        }
+        return purchaseHistory;
+    }
 
     public void addToCart(Product product) {
         this.cart.add(product);
@@ -131,17 +138,20 @@ public class Buyer implements Serializable{
         }
 
         cart.removeAll(purchased);
+        purchaseHistory.addAll(purchased);
         return atLeastOneBought;
     }
 
     public String listPurchases() {
-        StringBuilder purchases = new StringBuilder();
+        if (purchaseHistory.isEmpty()) {
+            return "Nenhuma compra realizada.";
+        }
+        StringBuilder purchases = new StringBuilder("Histórico de compras: \n");
         for (Product product : cart) {
             purchases.append(product.getName()).append("\n");
         }
         return purchases.toString();
     }
-
 
 
     @Override
