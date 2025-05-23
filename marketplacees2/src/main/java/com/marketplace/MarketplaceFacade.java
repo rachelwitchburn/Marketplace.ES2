@@ -210,10 +210,10 @@ public class MarketplaceFacade {
     //Compra de produtos
 
     //Unitária
-    public boolean buyProduct(Buyer buyer, String productName) {
+    public boolean buyProduct(Buyer buyer, String productName, int discount) {
         for (Product product : this.products) {
             if (product.getName().equalsIgnoreCase(productName)) {
-                return buyer.buyProduct(product);
+                return buyer.buyProduct(product, discount);
             }
         }
         System.out.println("Produto não encontrado.");
@@ -221,8 +221,8 @@ public class MarketplaceFacade {
     }
 
     //Total
-    public boolean finalizePurchase(Buyer buyer) {
-        return buyer.finalizePurchase();
+    public boolean finalizePurchase(Buyer buyer, int discount) {
+        return buyer.finalizePurchase(discount);
     }
 
     public Object login(String email, String password) {

@@ -61,7 +61,9 @@ public class Main {
     private static Object handleLogin(Scanner scanner, MarketplaceFacade marketplaceFacade) {
         System.out.print("Digite seu e-mail: ");
         String email = scanner.nextLine();
-        String password = InputUtil.readPassword("Senha: ");
+
+        System.out.print("Senha: ");
+        String password = scanner.nextLine(); //InputUtil.readPassword("Senha: ");
 
         Object user = marketplaceFacade.login(email, password);
         if (user == null) {
@@ -73,7 +75,7 @@ public class Main {
     }
 
     private static void handleRegister(Scanner scanner, MarketplaceFacade marketplaceFacade) {
-        System.out.println("\nEscolha o tipo de conta:");
+        System.out.println("Escolha o tipo de conta:");
         System.out.println("1. Comprador");
         System.out.println("2. Loja");
         System.out.print("Opção: ");
@@ -85,7 +87,8 @@ public class Main {
         System.out.print("Email: ");
         String email = scanner.nextLine();
 
-        String password = InputUtil.readPassword("Senha: ");
+        System.out.print("Senha: ");
+        String password = scanner.nextLine(); // InputUtil.readPassword("Senha: ");
 
         System.out.print("CPF/CNPJ: ");
         String cpfOrCnpj = scanner.nextLine();
@@ -171,7 +174,18 @@ public class Main {
                     // Comprar um produto específico do carrinho
                     System.out.print("Digite o nome do produto para comprar: ");
                     String productToBuy = scanner.nextLine();
-                    boolean comprado = marketplaceFacade.buyProduct(user, productToBuy);
+                    
+                    System.out.print("Usar R$ "+user.getPoints()+",00 de desconto por pontos acumulados? (s/n) ");
+                    String pointsUse = scanner.nextLine();
+                    
+                    int discount = 0;
+
+                    if(pointsUse.equals("s")){
+                        discount = user.getPoints();
+                        user.setPoints(0);
+                    }
+
+                    boolean comprado = marketplaceFacade.buyProduct(user, productToBuy, discount);
                     if (comprado) {
                         System.out.println("Produto comprado com sucesso!");
                     } else {
@@ -181,7 +195,18 @@ public class Main {
 
                 case "6":
                     // Finalizar a compra de todos os produtos do carrinho
-                    boolean sucesso = marketplaceFacade.finalizePurchase(user);
+                    System.out.print("Usar R$ "+user.getPoints()+",00 de desconto por pontos acumulados? (s/n) ");
+                    String BuyAllPointsUse = scanner.nextLine();
+                    
+                    int BuyAllDiscount = 0;
+
+                    if(BuyAllPointsUse.equals("s")){
+                        BuyAllDiscount = user.getPoints();
+                        user.setPoints(0);
+                    }
+                    
+                    boolean sucesso = marketplaceFacade.finalizePurchase(user, BuyAllDiscount);
+
                     if (sucesso) {
                         System.out.println("Compra finalizada com sucesso!");
                     } else {

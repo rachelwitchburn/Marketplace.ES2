@@ -16,6 +16,7 @@ public class Buyer implements Serializable{
     private String address;
     private transient List<Product> cart = new ArrayList<>();
     private List<Product> purchaseHistory = new ArrayList<>();
+    private int points;
 
     public Buyer() {
 
@@ -95,6 +96,18 @@ public class Buyer implements Serializable{
         return purchaseHistory;
     }
 
+    public int getPoints(){
+        return this.points;
+    }
+
+    public void setPoints(int newPoints){
+        this.points = newPoints;
+    }
+
+    public void addPoints(Product prod){
+        this.points += (int)((prod.getValue() * 1)/5.0); // a cada 5 reais ganha 1 ponto
+    }
+
     public void addToCart(Product product) {
         this.cart.add(product);
     }
@@ -105,12 +118,15 @@ public class Buyer implements Serializable{
         this.cart.clear();
     }
 
-    public boolean buyProduct(Product product) {
+    public boolean buyProduct(Product product, int discount) {
         if (this.cart.contains(product)) {
             if (product.getQuantity() > 0) {
                 product.setQuantity(product.getQuantity() - 1);
+                this.addPoints(product);
+                double value = product.getValue();
                 this.cart.remove(product);
                 System.out.println("Compra realizada com sucesso.");
+                System.out.println("Valor Total: R$"+(value-discount));
                 return true;
             } else {
                 System.out.println("Produto sem estoque.");
@@ -122,20 +138,28 @@ public class Buyer implements Serializable{
         }
     }
 
-    public boolean finalizePurchase() {
+    public boolean finalizePurchase(int discount) {
         boolean atLeastOneBought = false;
         List<Product> purchased = new ArrayList<>();
+        int total = 0;
 
         for (Product product : new ArrayList<>(cart)) {
             if (product.getQuantity() > 0) {
                 product.setQuantity(product.getQuantity() - 1);
+                this.addPoints(product);
+
                 purchased.add(product);
                 atLeastOneBought = true;
+                
+                total += product.getValue();
+
                 System.out.println("Comprado: " + product.getName());
             } else {
                 System.out.println("Sem estoque: " + product.getName());
             }
         }
+
+        System.out.println("Total da Compra: " + (total-discount));
 
         cart.removeAll(purchased);
         purchaseHistory.addAll(purchased);
