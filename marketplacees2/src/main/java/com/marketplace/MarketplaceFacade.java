@@ -5,7 +5,6 @@ import com.marketplace.model.Admin;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
 import com.marketplace.model.Store;
-import com.marketplace.service.ProductService;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -43,21 +42,18 @@ public class MarketplaceFacade {
         }
     }
 
-    // Adicionar comprador
     public void addBuyer(String name, String email, String password, String cpf, String address) {
         Buyer buyer = new Buyer(name, email, password, cpf, address);
         buyers.add(buyer);
         saveData(BUYERS_FILE, buyers);
     }
 
-    // Adicionar produto
-    public void addProduct(String name, double value, int quantity, ProductType type, String brand, String description) {
-        Product product = new Product(name, value, quantity, type, brand, description);
+    public void addProduct(String name, double value, int quantity, ProductType type, String brand, String description, Store store) {
+        Product product = new Product(name, value, quantity, type, brand, description, store);
         products.add(product);
         saveData(PRODUCTS_FILE, products);
     }
 
-    // Adicionar loja
     public void addStore(String name, String email, String password, String cnpj, String address) {
         Store store = new Store(name, email, password,  cnpj,  address);
         stores.add(store);
@@ -70,24 +66,27 @@ public class MarketplaceFacade {
         saveData(BUYERS_FILE, buyers);
     }
 
-    // Listar compradores
     public List<Buyer> listBuyers() {
         return buyers;
     }
 
-    // Listar produtos
     public List<Product> listProducts() {
         return products;
     }
 
-    //Buscar produtos
     public List<Product> searchProduct(String name) {
         return products.stream()
                 .filter(p -> p.getName().equalsIgnoreCase(name))
                 .collect(Collectors.toList());
     }
 
-    // Listar lojas
+    public Product getProductByName(String name) {
+        return products.stream()
+                       .filter(p -> p.getName().equalsIgnoreCase(name))
+                       .findFirst()
+                       .orElse(null);
+    }
+
     public List<Store> listStores() {
         return stores;
     }
@@ -96,7 +95,6 @@ public class MarketplaceFacade {
         return admins;
     }
 
-    // Atualizar comprador
     public void updateBuyer(int id,String email, String name, String password, String cpf, String address) {
         for (Buyer buyer : buyers) {
             if (buyer.getId() == id) {
@@ -110,7 +108,6 @@ public class MarketplaceFacade {
         }
     }
 
-    // Atualizar produto
     public void updateProduct(String productName, Float value, int quantity, ProductType type, String brand, String description) {
         for (Product product : products) {
             if (product.getName().equals(productName)) {
@@ -125,7 +122,6 @@ public class MarketplaceFacade {
         }
     }
 
-    // Atualizar loja
     public void updateStore(int id, String name, String email, String password, String cnpj, String address) {
         for (Store store : stores) {
             if (store.getId() == id) {
@@ -153,20 +149,16 @@ public class MarketplaceFacade {
         }
     }
 
-
-    // Deletar comprador
     public void deleteBuyer(String email) {
         buyers.removeIf(buyer -> buyer.getEmail().equals(email));
         saveData(BUYERS_FILE, buyers);
     }
 
-    // Deletar produto
     public void deleteProduct(String productName) {
         products.removeIf(product -> product.getName().equals(productName));
         saveData(PRODUCTS_FILE, products);
     }
 
-    // Deletar loja
     public void deleteStore(String storeName) {
         stores.removeIf(store -> store.getName().equals(storeName));
         saveData(STORES_FILE, stores);
@@ -177,7 +169,6 @@ public class MarketplaceFacade {
         saveData(ADMINS_FILE, buyers);
     }
 
-    // Método genérico para salvar listas
     private <T> void saveData(String fileName, List<T> list) {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
             out.writeObject(list);
@@ -186,7 +177,12 @@ public class MarketplaceFacade {
         }
     }
 
-    //Adicionar ao carrinho
+    public void saveAllData() {
+        saveData(BUYERS_FILE, buyers);
+        saveData(PRODUCTS_FILE, products);
+        saveData(STORES_FILE, stores);
+    }
+
     public boolean addToCart(Buyer buyer, String productName) {
         for (Product product : this.products) {
             if (product.getName().equalsIgnoreCase(productName) && product.getQuantity() > 0) {
@@ -197,7 +193,6 @@ public class MarketplaceFacade {
         return false;
     }
 
-    //deletar do carrinho
     public boolean deleteFromCart(Buyer buyer, String productName) {
         for (Product product : this.products) {
             if(product.getName().equalsIgnoreCase(productName)){
@@ -207,9 +202,6 @@ public class MarketplaceFacade {
         return false;
     }
 
-    //Compra de produtos
-
-    //Unitária
     public boolean buyProduct(Buyer buyer, String productName, int discount) {
         for (Product product : this.products) {
             if (product.getName().equalsIgnoreCase(productName)) {
@@ -220,10 +212,47 @@ public class MarketplaceFacade {
         return false;
     }
 
-    //Total
     public boolean finalizePurchase(Buyer buyer, int discount) {
         return buyer.finalizePurchase(discount);
     }
+
+    public boolean rateProduct(Buyer buyer, String productName, int rating, String comment) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Nota deve estar entre 1 e 5.");
+        }
+
+        for (Product p : buyer.getPurchaseHistory()) {
+            if (p.getName().equalsIgnoreCase(productName)) {
+                Product productInMainList = getProductByName(productName);
+                if (productInMainList != null) {
+                    productInMainList.addRating(buyer, rating);
+                    productInMainList.addComment(buyer, comment);
+                    saveAllData();
+                    return true;
+                }   
+            }
+        }
+        return false;
+    }
+
+    public boolean rateStore(Buyer buyer, String storeName, int rating, String comment) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Nota deve estar entre 1 e 5.");
+        }
+
+        for (Product p : buyer.getPurchaseHistory()) {
+            Store store = p.getStore();
+            if (store != null && store.getName().equalsIgnoreCase(storeName)) {
+                store.getRatings().put(buyer, rating);
+                store.getComments().put(buyer, comment);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
     public Object login(String email, String password) {
         for (Admin admin : admins) {

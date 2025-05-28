@@ -3,9 +3,9 @@ package com.marketplacees2.service;
 import com.marketplace.Enum.ProductType;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
+import com.marketplace.model.Store;
 import com.marketplace.repository.BuyerRepository;
 import com.marketplace.service.BuyerService;
-import com.marketplace.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,11 +20,13 @@ public class BuyerServiceTest {
 
     private BuyerRepository buyerRepository;
     private BuyerService buyerService;
+    private Store testStore;
 
     @BeforeEach
     void setUp() {
         buyerRepository = mock(BuyerRepository.class);
         buyerService = new BuyerService(buyerRepository);
+        testStore =  new Store("Test Store", "test@store.com", "12345", "1938598489", "rua teste");
 
     }
 
@@ -36,7 +38,6 @@ public class BuyerServiceTest {
     void testAddBuyer() {
         Buyer buyer = createBuyer("John Doe", "john@example.com");
 
-        // Captura o argumento passado para o método
         ArgumentCaptor<Buyer> buyerCaptor = ArgumentCaptor.forClass(Buyer.class);
         doNothing().when(buyerRepository).addBuyer(buyerCaptor.capture());
 
@@ -44,7 +45,6 @@ public class BuyerServiceTest {
 
         verify(buyerRepository, times(1)).addBuyer(buyerCaptor.capture());
 
-        // Verifica se o buyer capturado é igual ao que foi passado
         assertEquals(buyer.getName(), buyerCaptor.getValue().getName());
         assertEquals(buyer.getEmail(), buyerCaptor.getValue().getEmail());
     }
@@ -67,7 +67,6 @@ public class BuyerServiceTest {
 
     @Test
     void testListBuyersEmpty() {
-        // Configuração do mock para retornar uma lista vazia
         when(buyerRepository.getAllBuyers()).thenReturn(Arrays.asList());
 
         List<Buyer> result = buyerService.listBuyers();
@@ -116,7 +115,6 @@ public class BuyerServiceTest {
     void testRemoveBuyerNotFound() {
         int id = 1;
 
-        // Quando o repositório não encontrar o buyer para remover
         when(buyerRepository.removeBuyer(id)).thenReturn(false);
 
         boolean result = buyerService.removeBuyer(id);
@@ -142,31 +140,31 @@ public class BuyerServiceTest {
     void testBuyProduct_RemovesProductFromCart() {
 
         Buyer buyer = new Buyer();
-        Product product1 = new Product("Notebook Acer", 2500, 2, ProductType.ELETRONICO, "Acer", "Descrição");
-        Product product2 = new Product("Notebook Multilaser", 2000, 2, ProductType.ELETRONICO, "Multilaser", "Descrição");
+        Product product1 = new Product("Notebook Acer", 2500, 2, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
+        Product product2 = new Product("Notebook Multilaser", 2000, 2, ProductType.ELETRONICO, "Multilaser", "Descrição", testStore);
 
         buyer.addToCart(product1);
         buyer.addToCart(product2);
 
         assertTrue(buyer.getCart().contains(product1));
 
-        boolean result = buyer.buyProduct(product1);
+        boolean result = buyer.buyProduct(product1, 0);
 
         assertTrue(result);
         assertFalse(buyer.getCart().contains(product1));
-        assertEquals(1, product1.getQuantity()); // de 2 para 1
+        assertEquals(1, product1.getQuantity());
     }
 
     @Test
     void testFinalizePurchase_ClearsCart() {
         Buyer buyer = new Buyer();
-        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição");
-        Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição");
+        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
+        Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição", testStore);
 
         buyer.addToCart(product1);
         buyer.addToCart(product2);
 
-        boolean result = buyer.finalizePurchase();
+        boolean result = buyer.finalizePurchase(0);
 
         assertTrue(result);
         assertTrue(buyer.getCart().isEmpty());
@@ -178,7 +176,7 @@ public class BuyerServiceTest {
     void testAddToCart_ProductIsAdded(){
 
         Buyer buyer = new Buyer();
-        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição");
+        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
 
         buyer.addToCart(product1);
 
@@ -194,8 +192,8 @@ public class BuyerServiceTest {
     @Test
     void listPurchases () {
         Buyer buyer = new Buyer();
-        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição");
-        Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição");
+        Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
+        Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição", testStore);
 
         buyer.addToCart(product1);
         buyer.addToCart(product2);

@@ -1,6 +1,5 @@
 package com.marketplace.model;
 
-import com.marketplace.model.Product;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +104,7 @@ public class Buyer implements Serializable{
     }
 
     public void addPoints(Product prod){
-        this.points += (int)((prod.getValue() * 1)/5.0); // a cada 5 reais ganha 1 ponto
+        this.points += (int)((prod.getValue() * 1)/5.0);
     }
 
     public void addToCart(Product product) {

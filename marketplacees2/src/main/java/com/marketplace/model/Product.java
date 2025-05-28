@@ -1,6 +1,8 @@
 package com.marketplace.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.marketplace.Enum.ProductType;
 
@@ -14,15 +16,21 @@ public class Product implements Serializable{
     private ProductType type;
     private String brand;
     private String description;
+    private Store store;
+    private Map<Buyer, Integer> ratings = new HashMap<>();
+    private Map<Buyer, String> comments = new HashMap<>();
 
 
-    public Product(String name, double value, int quantity, ProductType type, String brand, String description) {
+    public Product(String name, double value, int quantity, ProductType type, String brand, String description, Store store) {
         this.name = name;
         this.value = value;
         this.quantity = quantity;
         this.type = type;
         this.brand = brand;
         this.description = description;
+        this.store = store;
+        this.ratings = new HashMap<>();
+        this.comments = new HashMap<>();
     }
 
     public int getId() { 
@@ -81,6 +89,47 @@ public class Product implements Serializable{
         this.description = description; 
     }
 
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Map<Buyer, Integer> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Map<Buyer, Integer> ratings) {
+        this.ratings = ratings;
+    }
+
+    public Map<Buyer, String> getComments() {
+        return comments;
+    }
+
+    public void setComments(Map<Buyer, String> comments) {
+        this.comments = comments;
+    }
+
+    public void addRating(Buyer buyer, int rating) {
+    ratings.put(buyer, rating);
+    }
+
+    public void addComment(Buyer buyer, String comment) {
+        comments.put(buyer, comment);
+    }
+
+    public boolean hasRatingFrom(Buyer buyer) {
+        return ratings.containsKey(buyer);
+    }
+
+    public double getAverageRating() {
+        if (ratings.isEmpty()) return 0.0;
+        return ratings.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -90,6 +139,7 @@ public class Product implements Serializable{
                ", categoria='" + type + '\'' +
                ", marca='" + brand + '\'' +
                ", descrição='" + description + '\'' +
+               ", Avaliação='" + getAverageRating() + '\'' +
                '}';
     }
 }

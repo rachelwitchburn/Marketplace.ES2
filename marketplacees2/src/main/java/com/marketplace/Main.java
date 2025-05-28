@@ -1,5 +1,6 @@
 package com.marketplace;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import com.marketplace.utils.InputUtil;
@@ -7,12 +8,6 @@ import com.marketplace.model.Buyer;
 import com.marketplace.model.Store;
 import com.marketplace.model.Admin;
 import com.marketplace.model.Product;
-/*
-import com.marketplace.service.BuyerService;
-import com.marketplace.service.StoreService;
-import com.marketplace.repository.BuyerRepository;
-import com.marketplace.repository.StoreRepository;
-*/
 import com.marketplace.Enum.ProductType;
 
 public class Main {
@@ -63,7 +58,7 @@ public class Main {
         String email = scanner.nextLine();
 
         System.out.print("Senha: ");
-        String password = scanner.nextLine(); //InputUtil.readPassword("Senha: ");
+        String password = scanner.nextLine();
 
         Object user = marketplaceFacade.login(email, password);
         if (user == null) {
@@ -88,7 +83,7 @@ public class Main {
         String email = scanner.nextLine();
 
         System.out.print("Senha: ");
-        String password = scanner.nextLine(); // InputUtil.readPassword("Senha: ");
+        String password = scanner.nextLine();
 
         System.out.print("CPF/CNPJ: ");
         String cpfOrCnpj = scanner.nextLine();
@@ -110,7 +105,6 @@ public class Main {
         }
     }
 
-    // Menu de gerenciamento de compradores
     private static void BuyersMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Buyer user) {
         while (true) {
             System.out.println("\n=== Menu Comprador ===");
@@ -121,7 +115,8 @@ public class Main {
             System.out.println("5. Comprar um produto do carrinho");
             System.out.println("6. Finalizar compra (comprar todos os produtos)");
             System.out.println("7. Ver histórico de compras");
-            System.out.println("8. Sair");
+            System.out.println("8. Avaliar Produto ou Loja");
+            System.out.println("9. Sair");
 
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
@@ -171,7 +166,6 @@ public class Main {
                     break;
 
                 case "5":
-                    // Comprar um produto específico do carrinho
                     System.out.print("Digite o nome do produto para comprar: ");
                     String productToBuy = scanner.nextLine();
                     
@@ -194,7 +188,6 @@ public class Main {
                     break;
 
                 case "6":
-                    // Finalizar a compra de todos os produtos do carrinho
                     System.out.print("Usar R$ "+user.getPoints()+",00 de desconto por pontos acumulados? (s/n) ");
                     String BuyAllPointsUse = scanner.nextLine();
                     
@@ -215,7 +208,6 @@ public class Main {
                     break;
 
                 case "7":
-                    // Ver histórico de compras
                     System.out.println("\nHistórico de Compras:");
                     marketplaceFacade.getPurchaseHistory(user);
                     for (Product p : user.getPurchaseHistory()) {
@@ -224,6 +216,83 @@ public class Main {
                     break;
 
                 case "8":
+                     Buyer buyerToRate = user;
+
+                if (buyerToRate == null) {
+                    System.out.println("Erro: Nenhum comprador logado para realizar a avaliação.");
+                    break;
+                }
+
+                System.out.println("\nO que você deseja avaliar, " + buyerToRate.getName() + "?");
+                System.out.println("1. Produto");
+                System.out.println("2. Loja");
+                System.out.print("Escolha uma opção: ");
+                int ratingChoice;
+                try {
+                    ratingChoice = scanner.nextInt();
+                    scanner.nextLine();
+                } catch (InputMismatchException e) {
+                    System.out.println("Entrada inválida. Por favor, digite 1 ou 2.");
+                    scanner.nextLine();
+                    break;
+                }
+
+                if (ratingChoice == 1) {
+                    System.out.print("Digite o nome do produto que você deseja avaliar: ");
+                    String productNameToRate = scanner.nextLine();
+                    System.out.print("Digite a nota (1-5): ");
+                    int ratingValue;
+                    try {
+                        ratingValue = scanner.nextInt();
+                        scanner.nextLine();
+                    } catch (InputMismatchException e) {
+                        System.out.println("Nota inválida. Por favor, digite um número entre 1 e 5.");
+                        scanner.nextLine();
+                        break;
+                    }
+                    System.out.print("Digite um comentário (opcional): ");
+                    String comment = scanner.nextLine();
+
+                    try {
+                        if (marketplaceFacade.rateProduct(buyerToRate, productNameToRate, ratingValue, comment)) {
+                            System.out.println("Produto avaliado com sucesso!");
+                        } else {
+                            System.out.println("Não foi possível avaliar o produto. Verifique se o produto foi comprado por você ou se o nome está correto.");
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Erro: " + e.getMessage());
+                    }
+                } else if (ratingChoice == 2) {
+                    System.out.print("Digite o nome da loja que você deseja avaliar: ");
+                    String storeNameToRate = scanner.nextLine();
+                    System.out.print("Digite a nota (1-5): ");
+                    int ratingValue;
+                    try {
+                        ratingValue = scanner.nextInt();
+                        scanner.nextLine();
+                    } catch (InputMismatchException e) {
+                        System.out.println("Nota inválida. Por favor, digite um número entre 1 e 5.");
+                        scanner.nextLine();
+                        break;
+                    }
+                    System.out.print("Digite um comentário (opcional): ");
+                    String comment = scanner.nextLine();
+
+                    try {
+                        if (marketplaceFacade.rateStore(buyerToRate, storeNameToRate, ratingValue, comment)) {
+                            System.out.println("Loja avaliada com sucesso!");
+                        } else {
+                            System.out.println("Não foi possível avaliar a loja. Verifique se algum produto desta loja foi comprado por você ou se o nome está correto.");
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Erro: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Opção inválida.");
+                }
+                break;
+
+                case "9":
                     return;
 
                 default:
@@ -319,15 +388,33 @@ public class Main {
                     }
                 }
 
-                marketplaceFacade.addProduct(name, productValue, quantity, type, brand, description);
+                System.out.println("Lojas disponíveis:");
+
+                List<Store> stores = marketplaceFacade.listStores();
+                for (int i = 0; i < stores.size(); i++) {
+                    System.out.printf("%d - %s (%s)%n", i + 1, stores.get(i).getName(), stores.get(i).getEmail());
+                }
+
+                Store selectedStore = null;
+                while (selectedStore == null) {
+                    System.out.print("Escolha o número da loja para associar ao produto: ");
+                    int storeIndex = scanner.nextInt();
+                    scanner.nextLine();
+                    if (storeIndex >= 1 && storeIndex <= stores.size()) {
+                        selectedStore = stores.get(storeIndex - 1);
+                    } else {
+                        System.out.println("Índice inválido! Tente novamente.");
+                    }
+                }
+
+                marketplaceFacade.addProduct(name, productValue, quantity, type, brand, description, selectedStore);
                 System.out.println("Produto adicionado com sucesso!");
                 break;
 
                 case 2:
-                    // Listar produtos
                     System.out.println("\nLista de Produtos:");
                     for (Product product : marketplaceFacade.listProducts()) {
-                        System.out.println(product); // Usa o toString do Product
+                        System.out.println(product);
                     }
                     break;
                 case 3:
@@ -366,13 +453,11 @@ public class Main {
                     System.out.println("Produto atualizado com sucesso!");
                     break;
                 case 4:
-                    // Remover produto
                     System.out.print("Digite o nome do produto a ser removido: ");
                     String productName = scanner.nextLine();
                     marketplaceFacade.deleteProduct(productName);
                     break;
                 case 6:
-                    // Voltar ao menu principal
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
@@ -389,7 +474,7 @@ public class Main {
             System.out.println("4. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Limpar buffer
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -419,11 +504,10 @@ public class Main {
             System.out.println("5. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Limpar buffer
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
-                    // Adicionar loja
                     System.out.print("Nome da Loja: ");
                     String name = scanner.nextLine();
                     System.out.print("Email: ");
@@ -434,13 +518,11 @@ public class Main {
                     System.out.print("Endereço: ");
                     String address = scanner.nextLine();
 
-                    //Store newStore = new Store(name, email, password, cnpj, address);
                     marketplaceFacade.addStore(name, email, password, cnpj, address);
                     System.out.println("Loja adicionada com sucesso!");
                     break;
 
                 case 2:
-                    // Listar lojas
 
                     System.out.println("\nLista de Lojas:");
                     for (Store store : marketplaceFacade.listStores()) {
@@ -449,10 +531,9 @@ public class Main {
                     break;
 
                 case 3:
-                    // Atualizar loja
                     System.out.print("Digite o ID da loja a ser atualizada: ");
                     int idToUpdate = scanner.nextInt();
-                    scanner.nextLine(); // Limpar buffer
+                    scanner.nextLine();
 
                     System.out.print("Novo Nome da Loja: ");
                     String newName = scanner.nextLine();
@@ -464,36 +545,17 @@ public class Main {
                     System.out.print("Novo Endereço: ");
                     String newAddress = scanner.nextLine();
 
-                    // Store updatedStore = new Store(newName, newEmail, newPassword, newCnpj, newAddress);
                     marketplaceFacade.updateStore(idToUpdate, newName, newEmail, newPassword, newCnpj, newAddress);
                     System.out.println("Loja atualizada com sucesso!");
                     break;
-                // Setar o ID correto
-                    /*
-                    if (marketplaceFacade.updateStore(updatedStore)) {
-                        System.out.println("Loja atualizada com sucesso!");
-                    } else {
-                        System.out.println("Erro ao atualizar loja.");
-                    }
-                        */
-
 
                 case 4:
-                    // Remover loja
                     System.out.print("Digite o nome da loja a ser removida: ");
                     String nameToRemove = scanner.nextLine();
                     marketplaceFacade.deleteStore(nameToRemove);
-                    /*
-                    if (storeService.removeStore(idToRemove)) {
-                        System.out.println("Loja removida com sucesso!");
-                    } else {
-                        System.out.println("Erro ao remover loja.");
-                    }
-                        */
                     break;
 
                 case 5:
-                    // Voltar ao menu principal
                     return;
 
                 default:
@@ -514,7 +576,7 @@ public class Main {
 
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Limpar buffer
+            scanner.nextLine();
             ProductType type = null;
             ProductType updatedType = null;
             int count = 0;
@@ -552,9 +614,32 @@ public class Main {
                     System.out.print("Descrição: ");
                     String description = scanner.nextLine();
 
-                    marketplaceFacade.addProduct(name, value, quantity, type, brand, description);
-                    System.out.println("Produto adicionado com sucesso!");
-                    break;
+                    List<Store> stores = marketplaceFacade.listStores();
+                    if (stores.isEmpty()) {
+                        System.out.println("Nenhuma loja cadastrada. Cadastre uma loja primeiro.");
+                        break;
+                    }
+
+                    System.out.println("Selecione uma loja para associar ao produto:");
+                    for (int i = 0; i < stores.size(); i++) {
+                        System.out.printf("%d - %s (%s)%n", i + 1, stores.get(i).getName(), stores.get(i).getEmail());
+                    }
+
+                    Store selectedStore = null;
+                    while (selectedStore == null) {
+                        System.out.print("Número da loja: ");
+                        int index = scanner.nextInt();
+                        scanner.nextLine();
+                        if (index >= 1 && index <= stores.size()) {
+                            selectedStore = stores.get(index - 1);
+                        } else {
+                            System.out.println("Índice inválido. Tente novamente.");
+                        }
+                    }
+
+                marketplaceFacade.addProduct(name, value, quantity, type, brand, description, selectedStore);
+                System.out.println("Produto adicionado com sucesso!");
+                break;
 
                 case 2:
                     for (Product product : marketplaceFacade.listProducts()) {

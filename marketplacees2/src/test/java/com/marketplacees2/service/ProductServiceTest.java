@@ -2,6 +2,7 @@ package com.marketplacees2.service;
 
 import com.marketplace.Enum.ProductType;
 import com.marketplace.model.Product;
+import com.marketplace.model.Store;
 import com.marketplace.repository.ProductRepository;
 import com.marketplace.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,13 +26,17 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    private Store testStore;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        testStore =  new Store("Test Store", "test@store.com", "12345", "1938598489", "rua teste");
+
     }
 
     private Product createProduct(String name, double value, int quantity, ProductType productType, String brand, String description) {
-        return new Product(name, value, quantity, productType, brand, description);
+        return new Product(name, value, quantity, productType, brand, description, testStore);
     }
 
     @Test
