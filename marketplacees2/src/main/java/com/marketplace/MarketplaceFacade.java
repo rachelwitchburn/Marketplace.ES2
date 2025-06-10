@@ -107,7 +107,7 @@ public class MarketplaceFacade {
             }
         }
     }
-
+ 
     public void updateProduct(String productName, Float value, int quantity, ProductType type, String brand, String description) {
         for (Product product : products) {
             if (product.getName().equals(productName)) {

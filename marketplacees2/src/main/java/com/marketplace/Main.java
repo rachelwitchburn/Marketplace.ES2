@@ -45,9 +45,11 @@ public class Main {
                 if (user instanceof Admin) {
                     adminsMenu(scanner, marketplaceFacade, (Admin) user);
                 } else if (user instanceof Store) {
-                    storesMenu(scanner, marketplaceFacade, (Store) user);
+                    storeView storeView = new storeView();
+                    storeView.showStoreMenu(scanner, marketplaceFacade, (Store) user);
                 } else if (user instanceof Buyer) {
-                    BuyersMenu(scanner, marketplaceFacade, (Buyer) user);
+                    buyerView buyerView = new buyerView();
+                    buyerView.showBuyerMenu(scanner, marketplaceFacade, (Buyer) user);
                 }
             }
         }
@@ -104,7 +106,7 @@ public class Main {
                 System.out.println("Tipo inválido.");
         }
     }
-
+    /* 
     private static void BuyersMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Buyer user) {
         while (true) {
             System.out.println("\n=== Menu Comprador ===");
@@ -300,7 +302,8 @@ public class Main {
             }
         }
     }
-
+    */
+    /* 
     private static void storesMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Store user) {
         while (true) {
             System.out.println("\n------ MENU DE LOJAS ------");
@@ -463,7 +466,7 @@ public class Main {
                     System.out.println("Opção inválida. Tente novamente.");
             }
         }
-    }
+    }*/
 
     private static void adminsMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Admin admin) {
         while (true) {
@@ -769,8 +772,6 @@ public class Main {
             }
         }
     }
-
-
 
     private static String normalizarEntrada(String input) {
         return input
