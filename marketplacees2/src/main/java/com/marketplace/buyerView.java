@@ -11,6 +11,7 @@ public class buyerView {
     public void showBuyerMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Buyer user) {
         while (true) {
             System.out.println("\n=== Menu Comprador ===");
+            System.out.println("0. Listar produtos");
             System.out.println("1. Buscar produto");
             System.out.println("2. Adicionar produto ao carrinho");
             System.out.println("3. Excluir produto do carrinho");
@@ -25,6 +26,11 @@ public class buyerView {
             String opcao = scanner.nextLine();
 
             switch (opcao) {
+                case "0":
+                    for (Product product : marketplaceFacade.listProducts()) {
+                        System.out.println(product);
+                    }
+                    break;
                 case "1":
                     System.out.print("Digite o nome do produto: ");
                     String name = scanner.nextLine();

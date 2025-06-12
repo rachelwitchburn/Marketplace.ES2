@@ -9,8 +9,8 @@ import java.util.List;
 
 public class AdminRepository {
     private static final String FILE_PATH = "admins.ser";
-    
-   public List<Admin> loadAdmins() {
+
+    public List<Admin> loadAdmins() {
         List<Admin> admins = new ArrayList<>();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
             Object obj = ois.readObject();

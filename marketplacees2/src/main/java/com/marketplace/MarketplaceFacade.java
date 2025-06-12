@@ -205,7 +205,23 @@ public class MarketplaceFacade {
     public boolean buyProduct(Buyer buyer, String productName, int discount) {
         for (Product product : this.products) {
             if (product.getName().equalsIgnoreCase(productName)) {
-                return buyer.buyProduct(product, discount);
+                if (buyer.getCart().contains(product)) {
+                    if (product.getQuantity() > 0) {
+                        product.setQuantity(product.getQuantity() - 1);
+                        buyer.addPoints(product);
+                        double value = product.getValue();
+                        buyer.getCart().remove(product);
+                        System.out.println("Compra realizada com sucesso.");
+                        System.out.println("Valor Total: R$"+(value-discount));
+                        return true;
+                    } else {
+                        System.out.println("Produto sem estoque.");
+                        return false;
+                    }
+                } else {
+                    System.out.println("Produto não está no carrinho.");
+                    return false;
+                }
             }
         }
         System.out.println("Produto não encontrado.");
@@ -213,7 +229,31 @@ public class MarketplaceFacade {
     }
 
     public boolean finalizePurchase(Buyer buyer, int discount) {
-        return buyer.finalizePurchase(discount);
+        boolean atLeastOneBought = false;
+        List<Product> purchased = new ArrayList<>();
+        int total = 0;
+
+        for (Product product : new ArrayList<>(buyer.getCart())) {
+            if (product.getQuantity() > 0) {
+                product.setQuantity(product.getQuantity() - 1);
+                buyer.addPoints(product);
+
+                purchased.add(product);
+                atLeastOneBought = true;
+                
+                total += product.getValue();
+
+                System.out.println("Comprado: " + product.getName());
+            } else {
+                System.out.println("Sem estoque: " + product.getName());
+            }
+        }
+
+        System.out.println("Total da Compra: " + (total-discount));
+
+        buyer.getCart().removeAll(purchased);
+        buyer.getPurchaseHistory().addAll(purchased);
+        return atLeastOneBought;
     }
 
     public boolean rateProduct(Buyer buyer, String productName, int rating, String comment) {
@@ -251,8 +291,6 @@ public class MarketplaceFacade {
 
         return false;
     }
-
-
 
     public Object login(String email, String password) {
         for (Admin admin : admins) {

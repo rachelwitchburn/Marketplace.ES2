@@ -1,6 +1,5 @@
 package com.marketplace;
 
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import com.marketplace.utils.InputUtil;
@@ -75,8 +74,19 @@ public class Main {
         System.out.println("Escolha o tipo de conta:");
         System.out.println("1. Comprador");
         System.out.println("2. Loja");
+        System.out.println("0. Sair");
         System.out.print("Opção: ");
         String tipo = scanner.nextLine();
+
+        switch (tipo){
+            case "1":
+                break;
+            case "2":
+                break;
+            default:
+                System.out.println("Tipo inválido.");
+                return;
+        }
 
         System.out.print("Nome: ");
         String name = scanner.nextLine();

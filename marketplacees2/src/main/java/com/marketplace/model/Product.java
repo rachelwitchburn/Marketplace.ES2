@@ -126,6 +126,9 @@ public class Product implements Serializable{
     }
 
     public double getAverageRating() {
+        if (ratings == null){
+            ratings = new HashMap<>();
+        }
         if (ratings.isEmpty()) return 0.0;
         return ratings.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
