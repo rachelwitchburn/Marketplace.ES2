@@ -45,11 +45,11 @@ public class Main {
                     AdminView adminView = new AdminView();
                     adminView.showAdminMenu(scanner, marketplaceFacade, (Admin) user);
                 } else if (user instanceof Store) {
-                    storeView storeView = new storeView();
-                    storeView.showStoreMenu(scanner, marketplaceFacade, (Store) user);
+                    storeView storeView = new storeView(scanner, marketplaceFacade, (Store) user);
+                    storeView.showStoreMenu();
                 } else if (user instanceof Buyer) {
-                    buyerView buyerView = new buyerView();
-                    buyerView.showBuyerMenu(scanner, marketplaceFacade, (Buyer) user);
+                    buyerView buyerView = new buyerView(scanner, marketplaceFacade, (Buyer) user);
+                    buyerView.showBuyerMenu();
                 }
             }
         }

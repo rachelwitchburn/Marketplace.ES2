@@ -104,7 +104,6 @@ public class AdminView {
 
                 case 5:
                     return;
-
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }

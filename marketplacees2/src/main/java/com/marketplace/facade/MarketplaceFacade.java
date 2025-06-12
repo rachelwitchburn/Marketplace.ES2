@@ -34,7 +34,7 @@ public class MarketplaceFacade {
             }
         }
 
-
+        
         if (this.admins == null || this.admins.isEmpty()) {
             Admin defaultAdmin = new Admin("Administrador", "admin@admin.com", "admin123", "00000000000", "N/A");
             this.admins.add(defaultAdmin);
@@ -253,6 +253,7 @@ public class MarketplaceFacade {
 
         buyer.getCart().removeAll(purchased);
         buyer.getPurchaseHistory().addAll(purchased);
+        saveAllData();
         return atLeastOneBought;
     }
 
@@ -272,6 +273,7 @@ public class MarketplaceFacade {
                 }   
             }
         }
+        
         return false;
     }
 

@@ -101,7 +101,14 @@ public class Product implements Serializable{
         return ratings;
     }
 
+    public void verifyRatings(){
+        if (ratings == null){
+            ratings = new HashMap<>();
+        }
+    }
+
     public void setRatings(Map<Buyer, Integer> ratings) {
+        verifyRatings();
         this.ratings = ratings;
     }
 
@@ -114,11 +121,19 @@ public class Product implements Serializable{
     }
 
     public void addRating(Buyer buyer, int rating) {
-    ratings.put(buyer, rating);
+        verifyRatings();
+        ratings.put(buyer, rating);
     }
 
     public void addComment(Buyer buyer, String comment) {
+        verifyComments();
         comments.put(buyer, comment);
+    }
+
+    public void verifyComments(){
+        if (comments == null){
+            comments = new HashMap<>();
+        }
     }
 
     public boolean hasRatingFrom(Buyer buyer) {
@@ -126,9 +141,7 @@ public class Product implements Serializable{
     }
 
     public double getAverageRating() {
-        if (ratings == null){
-            ratings = new HashMap<>();
-        }
+        verifyRatings();
         if (ratings.isEmpty()) return 0.0;
         return ratings.values().stream().mapToInt(Integer::intValue).average().orElse(0.0);
     }
