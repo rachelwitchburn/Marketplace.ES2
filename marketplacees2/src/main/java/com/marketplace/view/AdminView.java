@@ -9,7 +9,6 @@ import com.marketplace.model.Admin;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
 import com.marketplace.model.Store;
-import com.marketplace.utils.InputUtil;
 
 public class AdminView {
     public void showAdminMenu(Scanner scanner, MarketplaceFacade marketplaceFacade, Admin admin) {
@@ -18,7 +17,7 @@ public class AdminView {
             System.out.println("1. Gerenciar Lojas");
             System.out.println("2. Gerenciar Compradores");
             System.out.println("3. Gerenciar Produtos");
-            System.out.println("4. Sair");
+            System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -33,7 +32,7 @@ public class AdminView {
                 case 3:
                     manageProducts(scanner, marketplaceFacade);
                     break;
-                case 4:
+                case 0:
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
@@ -48,7 +47,7 @@ public class AdminView {
             System.out.println("2. Listar Lojas");
             System.out.println("3. Atualizar Loja");
             System.out.println("4. Remover Loja");
-            System.out.println("5. Voltar ao Menu Principal");
+            System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -59,7 +58,8 @@ public class AdminView {
                     String name = scanner.nextLine();
                     System.out.print("Email: ");
                     String email = scanner.nextLine();
-                    String password = InputUtil.readPassword("Senha: ");
+                    System.out.print("Senha: ");
+                    String password = scanner.nextLine();
                     System.out.print("CNPJ: ");
                     String cnpj = scanner.nextLine();
                     System.out.print("Endereço: ");
@@ -86,7 +86,8 @@ public class AdminView {
                     String newName = scanner.nextLine();
                     System.out.print("Novo Email: ");
                     String newEmail = scanner.nextLine();
-                    String newPassword = InputUtil.readPassword("Senha: ");
+                    System.out.print("Senha: ");
+                    String newPassword = scanner.nextLine();
                     System.out.print("Novo CNPJ: ");
                     String newCnpj = scanner.nextLine();
                     System.out.print("Novo Endereço: ");
@@ -102,7 +103,7 @@ public class AdminView {
                     marketplaceFacade.deleteStore(nameToRemove);
                     break;
 
-                case 5:
+                case 0:
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
@@ -118,7 +119,7 @@ public class AdminView {
             System.out.println("2. Listar Produtos");
             System.out.println("3. Atualizar Produto");
             System.out.println("4. Remover Produto");
-            System.out.println("5. Voltar");
+            System.out.println("0. Voltar");
 
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
@@ -237,9 +238,8 @@ public class AdminView {
                     System.out.println("Produto removido com sucesso!");
                     break;
 
-                case 5:
+                case 0:
                     return;
-
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }
@@ -253,7 +253,7 @@ public class AdminView {
             System.out.println("2. Listar Compradores");
             System.out.println("3. Atualizar Comprador");
             System.out.println("4. Remover Comprador");
-            System.out.println("5. Voltar");
+            System.out.println("0. Voltar");
 
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
@@ -265,7 +265,8 @@ public class AdminView {
                     String name = scanner.nextLine();
                     System.out.print("Email: ");
                     String email = scanner.nextLine();
-                    String password = InputUtil.readPassword("Senha: ");
+                    System.out.print("Senha: ");
+                    String password = scanner.nextLine();
                     System.out.print("CPF: ");
                     String cpf = scanner.nextLine();
                     System.out.print("Endereço: ");
@@ -290,7 +291,8 @@ public class AdminView {
                     String updatedName = scanner.nextLine();
                     System.out.print("Novo Email: ");
                     String updatedEmail = scanner.nextLine();
-                    String updatedPassword = InputUtil.readPassword("Senha: ");
+                    System.out.print("Senha: ");
+                    String updatedPassword = scanner.nextLine();
                     System.out.print("Novo CPF: ");
                     String updatedCpf = scanner.nextLine();
                     System.out.print("Novo Endereço: ");
@@ -307,9 +309,8 @@ public class AdminView {
                     System.out.println("Comprador removido com sucesso!");
                     break;
 
-                case 5:
+                case 0:
                     return;
-
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
             }

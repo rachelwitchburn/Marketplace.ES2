@@ -26,7 +26,7 @@ public class storeView {
             System.out.println("2. Listar Produtos");
             System.out.println("3. Atualizar Produto");
             System.out.println("4. Remover Produto");
-            System.out.println("5. Voltar ao Menu Principal");
+            System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
             int choice = scanner.nextInt();
             scanner.nextLine(); // Limpar buffer
@@ -44,7 +44,7 @@ public class storeView {
                 case 4:
                     removeProduct();
                     break;
-                case 6:
+                case 0:
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");

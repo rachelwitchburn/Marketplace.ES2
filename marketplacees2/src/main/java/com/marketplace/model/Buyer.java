@@ -117,54 +117,6 @@ public class Buyer implements Serializable{
         this.cart.clear();
     }
 
-    public boolean buyProduct(Product product, int discount) {
-        if (this.cart.contains(product)) {
-            if (product.getQuantity() > 0) {
-                product.setQuantity(product.getQuantity() - 1);
-                this.addPoints(product);
-                double value = product.getValue();
-                this.cart.remove(product);
-                System.out.println("Compra realizada com sucesso.");
-                System.out.println("Valor Total: R$"+(value-discount));
-                return true;
-            } else {
-                System.out.println("Produto sem estoque.");
-                return false;
-            }
-        } else {
-            System.out.println("Produto não está no carrinho.");
-            return false;
-        }
-    }
-
-    public boolean finalizePurchase(int discount) {
-        boolean atLeastOneBought = false;
-        List<Product> purchased = new ArrayList<>();
-        int total = 0;
-
-        for (Product product : new ArrayList<>(cart)) {
-            if (product.getQuantity() > 0) {
-                product.setQuantity(product.getQuantity() - 1);
-                this.addPoints(product);
-
-                purchased.add(product);
-                atLeastOneBought = true;
-                
-                total += product.getValue();
-
-                System.out.println("Comprado: " + product.getName());
-            } else {
-                System.out.println("Sem estoque: " + product.getName());
-            }
-        }
-
-        System.out.println("Total da Compra: " + (total-discount));
-
-        cart.removeAll(purchased);
-        purchaseHistory.addAll(purchased);
-        return atLeastOneBought;
-    }
-
     public String listPurchases() {
         if (purchaseHistory.isEmpty()) {
             return "Nenhuma compra realizada.";

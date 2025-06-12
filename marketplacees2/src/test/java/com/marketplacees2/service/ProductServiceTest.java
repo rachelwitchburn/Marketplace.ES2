@@ -147,4 +147,9 @@ public class ProductServiceTest {
             productService.updateProduct(productToUpdate);
         }, "Esperado que uma exceção seja lançada ao atualizar produto.");
     }
+
+    @Test
+    void testSearchProduct(){
+        productService.searchProduct("Playstation 5");
+    }
 }

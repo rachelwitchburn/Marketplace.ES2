@@ -95,7 +95,7 @@ public class Store implements Serializable{
     }
 
     public void addRating(Buyer buyer, int rating) {
-    ratings.put(buyer, rating);
+        ratings.put(buyer, rating);
     }
 
     public void addComment(Buyer buyer, String comment) {

@@ -23,49 +23,49 @@ public class buyerView {
     public void showBuyerMenu() {
         while (true) {
             System.out.println("\n=== Menu Comprador ===");
-            System.out.println("0. Listar produtos");
-            System.out.println("1. Buscar produto");
-            System.out.println("2. Adicionar produto ao carrinho");
-            System.out.println("3. Excluir produto do carrinho");
-            System.out.println("4. Ver carrinho");
-            System.out.println("5. Comprar um produto do carrinho");
-            System.out.println("6. Finalizar compra (comprar todos os produtos)");
-            System.out.println("7. Ver histórico de compras");
-            System.out.println("8. Avaliar Produto ou Loja");
-            System.out.println("9. Sair");
+            System.out.println("1. Listar produtos");
+            System.out.println("2. Buscar produto");
+            System.out.println("3. Adicionar produto ao carrinho");
+            System.out.println("4. Excluir produto do carrinho");
+            System.out.println("5. Ver carrinho");
+            System.out.println("6. Comprar um produto do carrinho");
+            System.out.println("7. Finalizar compra (comprar todos os produtos)");
+            System.out.println("8. Ver histórico de compras");
+            System.out.println("9. Avaliar Produto ou Loja");
+            System.out.println("0. Sair");
 
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
 
             switch (opcao) {
-                case "0":
+                case "1":
                     listProducts();
                     break;
-                case "1":
+                case "2":
                     searchProduct();
                     break;
-                case "2":
+                case "3":
                     addToCart();
                     break;
-                case "3":
+                case "4":
                     deleteFromCart();
                     break;
-                case "4":
+                case "5":
                     showCart();
                     break;
-                case "5":
+                case "6":
                     buyCartProduct();
                     break;
-                case "6":
+                case "7":
                     finalizePurchase();
                     break;
-                case "7":
+                case "8":
                     purchaseHistory();
                     break;
-                case "8":
+                case "9":
                     rate();
                     break;
-                case "9":
+                case "0":
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
