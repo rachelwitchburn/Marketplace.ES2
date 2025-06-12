@@ -1,4 +1,4 @@
-package com.marketplace;
+package com.marketplace.facade;
 
 import com.marketplace.Enum.ProductType;
 import com.marketplace.model.Admin;

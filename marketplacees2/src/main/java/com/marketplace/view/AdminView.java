@@ -1,9 +1,10 @@
-package com.marketplace;
+package com.marketplace.view;
 
 import java.util.List;
 import java.util.Scanner;
 
 import com.marketplace.Enum.ProductType;
+import com.marketplace.facade.MarketplaceFacade;
 import com.marketplace.model.Admin;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
