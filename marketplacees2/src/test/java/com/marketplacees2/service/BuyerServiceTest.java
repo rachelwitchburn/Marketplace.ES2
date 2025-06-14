@@ -1,6 +1,7 @@
 package com.marketplacees2.service;
 
 import com.marketplace.Enum.ProductType;
+import com.marketplace.facade.MarketplaceFacade;
 import com.marketplace.model.Buyer;
 import com.marketplace.model.Product;
 import com.marketplace.model.Store;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -135,36 +137,59 @@ public class BuyerServiceTest {
         }, "Esperado que uma exceção seja lançada ao adicionar buyer.");
     }
 
+    private List<Product> products = new ArrayList<>();
+
+    public void addProduct(Product product) {
+        this.products.add(product);
+    }
+
 
     @Test
     void testBuyProduct_RemovesProductFromCart() {
-
+        MarketplaceFacade facade = new MarketplaceFacade();
         Buyer buyer = new Buyer();
-        Product product1 = new Product("Notebook Acer", 2500, 2, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
-        Product product2 = new Product("Notebook Multilaser", 2000, 2, ProductType.ELETRONICO, "Multilaser", "Descrição", testStore);
+        Store testStore = new Store();
+
+        facade.addProduct("Notebook Acer", 2500, 2, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
+        facade.addProduct("Notebook Multilaser", 2000, 2, ProductType.ELETRONICO, "Multilaser", "Descrição", testStore);
+
+        Product product1 = facade.listProducts().stream()
+            .filter(p -> p.getName().equals("Notebook Acer"))
+            .findFirst()
+            .orElseThrow();
+
+        Product product2 = facade.listProducts().stream()
+            .filter(p -> p.getName().equals("Notebook Multilaser"))
+            .findFirst()
+            .orElseThrow();
 
         buyer.addToCart(product1);
         buyer.addToCart(product2);
 
         assertTrue(buyer.getCart().contains(product1));
 
-        boolean result = buyer.buyProduct(product1, 0);
+        boolean result = facade.buyProduct(buyer, product1.getName(), 0);
 
         assertTrue(result);
         assertFalse(buyer.getCart().contains(product1));
         assertEquals(1, product1.getQuantity());
     }
 
+
+
+
     @Test
     void testFinalizePurchase_ClearsCart() {
+        MarketplaceFacade facade = new MarketplaceFacade();
         Buyer buyer = new Buyer();
+        Store testStore = new Store();
         Product product1 = new Product("Notebook Acer", 2500, 1, ProductType.ELETRONICO, "Acer", "Descrição", testStore);
         Product product2 = new Product("Notebook Multilaser", 2000, 1, ProductType.ELETRONICO, "Multilaser", "Descrição", testStore);
 
         buyer.addToCart(product1);
         buyer.addToCart(product2);
 
-        boolean result = buyer.finalizePurchase(0);
+        boolean result = facade.finalizePurchase(buyer, 0);
 
         assertTrue(result);
         assertTrue(buyer.getCart().isEmpty());
