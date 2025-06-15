@@ -28,25 +28,24 @@ public class storeView {
             System.out.println("4. Remover Produto");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Limpar buffer
+            String choice = scanner.nextLine();
 
             System.out.flush();
 
             switch (choice) {
-                case 1:
+                case "1":
                     addProduct();
                     break;
-                case 2:
+                case "2":
                     listProducts();
                     break;
-                case 3:
+                case "3":
                     updateProduct();
                     break;
-                case 4:
+                case "4":
                     removeProduct();
                     break;
-                case 0:
+                case "0":
                     return;
                 default:
                     System.out.println("Opção inválida. Tente novamente.");
