@@ -22,6 +22,8 @@ public class AdminView {
             int choice = scanner.nextInt();
             scanner.nextLine();
 
+            System.out.flush();
+
             switch (choice) {
                 case 1:
                     manageStores(scanner, marketplaceFacade);
@@ -303,7 +305,7 @@ public class AdminView {
                     break;
 
                 case 4:
-                    System.out.print("Nome do comprador a remover: ");
+                    System.out.print("Email do comprador a remover: ");
                     String nameToRemove = scanner.nextLine();
                     marketplaceFacade.deleteBuyer(nameToRemove);
                     System.out.println("Comprador removido com sucesso!");

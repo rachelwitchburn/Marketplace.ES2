@@ -42,28 +42,31 @@ public class MarketplaceFacade {
         }
     }
 
-    public void addBuyer(String name, String email, String password, String cpf, String address) {
+    public Buyer addBuyer(String name, String email, String password, String cpf, String address) {
         Buyer buyer = new Buyer(name, email, password, cpf, address);
         buyers.add(buyer);
         saveData(BUYERS_FILE, buyers);
+        return buyer;
     }
 
-    public void addProduct(String name, double value, int quantity, ProductType type, String brand, String description, Store store) {
+    public Product addProduct(String name, double value, int quantity, ProductType type, String brand, String description, Store store) {
         Product product = new Product(name, value, quantity, type, brand, description, store);
         products.add(product);
         saveData(PRODUCTS_FILE, products);
+        return product;
     }
 
-    public void addStore(String name, String email, String password, String cnpj, String address) {
+    public Store addStore(String name, String email, String password, String cnpj, String address) {
         Store store = new Store(name, email, password,  cnpj,  address);
         stores.add(store);
         saveData(STORES_FILE, stores);
+        return store;
     }
 
     public void addAdmin(String name, String email, String password, String cpf, String address) {
-        Buyer buyer = new Buyer(name, email, password, cpf, address);
-        buyers.add(buyer);
-        saveData(BUYERS_FILE, buyers);
+        Admin admin = new Admin(name, email, password, cpf, address);
+        admins.add(admin);
+        saveData(ADMINS_FILE, admins);
     }
 
     public List<Buyer> listBuyers() {

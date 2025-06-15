@@ -37,6 +37,8 @@ public class buyerView {
             System.out.print("Escolha: ");
             String opcao = scanner.nextLine();
 
+            System.out.flush();
+
             switch (opcao) {
                 case "1":
                     listProducts();

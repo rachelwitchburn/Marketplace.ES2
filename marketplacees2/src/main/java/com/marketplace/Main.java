@@ -26,6 +26,8 @@ public class Main {
             System.out.print("Escolha uma opção: ");
             String option = scanner.nextLine();
 
+            System.out.flush();
+
             switch (option) {
                 case "1":
                     user = handleLogin(scanner, marketplaceFacade);
@@ -62,6 +64,8 @@ public class Main {
         System.out.print("Senha: ");
         String password = scanner.nextLine();
 
+        System.out.flush();
+
         Object user = marketplaceFacade.login(email, password);
         if (user == null) {
             System.out.println("Login inválido. Tente novamente.");
@@ -78,6 +82,8 @@ public class Main {
         System.out.println("0. Sair");
         System.out.print("Opção: ");
         String tipo = scanner.nextLine();
+
+        System.out.flush();
 
         switch (tipo){
             case "1":

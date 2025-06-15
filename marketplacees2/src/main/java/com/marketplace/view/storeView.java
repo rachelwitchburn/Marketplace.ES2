@@ -31,6 +31,8 @@ public class storeView {
             int choice = scanner.nextInt();
             scanner.nextLine(); // Limpar buffer
 
+            System.out.flush();
+
             switch (choice) {
                 case 1:
                     addProduct();

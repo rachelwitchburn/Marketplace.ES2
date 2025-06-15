@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminRepository {
-    private static final String FILE_PATH = "../data/admins.ser";
+    private static final String FILE_PATH = "admins.ser";
 
     public List<Admin> loadAdmins() {
         List<Admin> admins = new ArrayList<>();
