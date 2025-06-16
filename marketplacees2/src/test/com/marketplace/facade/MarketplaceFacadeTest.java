@@ -66,95 +66,49 @@ class MarketplaceFacadeTest {
         assertTrue(retorno instanceof Admin);
     }
 
-    @Test
-    void listBuyers() {
-    }
-
-    @Test
-    void listProducts() {
-    }
-
-    @Test
-    void searchProduct() {
-    }
-
-    @Test
-    void getProductByName() {
-    }
-
-    @Test
-    void listStores() {
-    }
-
-    @Test
-    void listAdmins() {
-    }
-
-    @Test
-    void updateBuyer() {
-    }
-
-    @Test
-    void updateProduct() {
-    }
-
-    @Test
-    void updateStore() {
-    }
-
-    @Test
-    void updateAdmin() {
-    }
-
-    @Test
-    void deleteBuyer() {
-    }
-
-    @Test
-    void deleteProduct() {
-    }
-
-    @Test
-    void deleteStore() {
-    }
-
-    @Test
-    void deleteAdmin() {
-    }
-
-    @Test
-    void saveAllData() {
-    }
-
-    @Test
-    void addToCart() {
-    }
-
-    @Test
-    void deleteFromCart() {
-    }
-
-    @Test
-    void buyProduct() {
-    }
-
-    @Test
-    void finalizePurchase() {
-    }
-
+    //TESTES REQUISITO 7 (AVALIAÇÕES E COMENTÁRIOS
     @Test
     void rateProduct() {
+        Buyer  buyer = new Buyer();
+        buyer.getPurchaseHistory().add(new Product("Nintendo Switch 2", 4999,10, ProductType.VIDEO_GAME, "Nintendo", "Console Portátil",null));
+        assertTrue(marketplaceFacadeTest.rateProduct(buyer,"Nintendo Switch 2", 2, "Veio com defeito"));
+    }
+
+    @Test
+    void ratingLowerProduct(){
+        Buyer  buyer = new Buyer();
+        buyer.getPurchaseHistory().add(new Product("Nintendo Switch 2", 4999,10, ProductType.VIDEO_GAME, "Nintendo", "Console Portátil",null));
+        assertThrows(IllegalArgumentException.class,() -> marketplaceFacadeTest.rateProduct(buyer,"Nintendo Switch 2", -1, "Veio com defeito"));
+    }
+
+    @Test
+    void ratingHigherProduct(){
+        Buyer  buyer = new Buyer();
+        buyer.getPurchaseHistory().add(new Product("Nintendo Switch 2", 4999,10, ProductType.VIDEO_GAME, "Nintendo", "Console Portátil",null));
+        assertThrows(IllegalArgumentException.class,() -> marketplaceFacadeTest.rateProduct(buyer,"Nintendo Switch 2",6, "Veio com defeito"));
     }
 
     @Test
     void rateStore() {
+        Buyer  buyer = new Buyer();
+        Store store = new Store("Loja Teste","lojateste@hotmail.com","senhadaloja123","123456789023","Rua do Teste");
+        buyer.getPurchaseHistory().add(new Product("Nintendo Switch 2", 4999,10, ProductType.VIDEO_GAME, "Nintendo", "Console Portátil",store));
+        assertTrue(marketplaceFacadeTest.rateStore(buyer,"Loja Teste", 4, "Boa Loja"));
     }
 
     @Test
-    void login() {
+    void ratingLowerStore(){
+        Buyer  buyer = new Buyer();
+        Store store = new Store("Loja Teste","lojateste@hotmail.com","senhadaloja123","123456789023","Rua do Teste");
+        buyer.getPurchaseHistory().add(new Product("Nintendo Switch 2", 4999,10, ProductType.VIDEO_GAME, "Nintendo", "Console Portátil",store));
+        assertThrows(IllegalArgumentException.class,() -> marketplaceFacadeTest.rateStore(buyer,"Loja Teste", -5, "Boa Loja"));
     }
 
     @Test
-    void getPurchaseHistory() {
+    void ratingHigherStore(){
+        Buyer  buyer = new Buyer();
+        Store store = new Store("Loja Teste","lojateste@hotmail.com","senhadaloja123","123456789023","Rua do Teste");
+        buyer.getPurchaseHistory().add(new Product("Nintendo Switch 2", 4999,10, ProductType.VIDEO_GAME, "Nintendo", "Console Portátil",store));
+        assertThrows(IllegalArgumentException.class,() -> marketplaceFacadeTest.rateStore(buyer,"Loja Teste", 10, "Boa Loja"));
     }
 }
