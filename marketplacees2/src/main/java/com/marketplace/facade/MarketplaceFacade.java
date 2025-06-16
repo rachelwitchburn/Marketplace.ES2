@@ -200,6 +200,7 @@ public class MarketplaceFacade {
         for (Product product : this.products) {
             if(product.getName().equalsIgnoreCase(productName)){
                 buyer.deleteFromCart(product);
+                return true;
             }
         }
         return false;
@@ -214,8 +215,10 @@ public class MarketplaceFacade {
                         buyer.addPoints(product);
                         double value = product.getValue();
                         buyer.getCart().remove(product);
+                        buyer.getPurchaseHistory().add(product);
                         System.out.println("Compra realizada com sucesso.");
                         System.out.println("Valor Total: R$"+(value-discount));
+                        saveAllData();
                         return true;
                     } else {
                         System.out.println("Produto sem estoque.");

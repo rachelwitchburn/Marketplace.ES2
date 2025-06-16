@@ -130,6 +130,10 @@ public class buyerView {
         String productToBuy = scanner.nextLine();
         
         int discount = 0;
+        int total = 0;
+        for(Product p : user.getCart()){
+            total += p.getValue();
+        }
 
         if(user.getPoints() != 0){
             System.out.print("Usar R$ "+user.getPoints()+",00 de desconto por pontos acumulados? (s/n) ");
@@ -137,7 +141,12 @@ public class buyerView {
 
             if(pointsUse.equals("s")){
                 discount = user.getPoints();
-                user.setPoints(0);
+                if(total >= discount){
+                    user.setPoints(0);
+                }else{
+                    user.setPoints(discount - total);
+                    discount = total;
+                }
             }
         }
 
